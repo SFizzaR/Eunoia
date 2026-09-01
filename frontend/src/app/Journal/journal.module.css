@@ -1,0 +1,773 @@
+.journalContainer {
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  background: #fafafa;
+  padding: 40px 24px 80px;
+}
+
+.mainContent {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 42px;
+}
+
+.date {
+  margin: 0 0 8px;
+  color: #f782a9;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  color: #1a1a1a;
+  font-family: "Playfair Display", serif;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  color: #777;
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+}
+
+.privateBadge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border: 1px solid #f9c5c7;
+  border-radius: 999px;
+  background: #fff;
+  color: #777;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* =========================
+   MOOD SECTION
+   ========================= */
+
+.moodSection {
+  margin-bottom: 36px;
+}
+
+.moodSection h2,
+.editorTop h2 {
+  margin: 0;
+  color: #1a1a1a;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.moodOptions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.moodCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 80px;
+  padding: 12px 16px;
+  border: 2px solid #f0f0f0;
+  border-radius: 14px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.moodCard:hover {
+  transform: translateY(-2px);
+  background-color: #f5f5f5;
+  border-color: #e8e8e8;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.selectedMood {
+  background-color: #fff0f5;
+  border-color: #f782a9;
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 2px #f782a9,
+    0 6px 18px rgba(247, 130, 169, 0.15);
+}
+
+.moodEmoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.selectedMoodsDisplay {
+  margin: 20px 0 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #fff0f5;
+  border: 1px solid #f9c5c7;
+}
+
+.selectedMoodsLabel {
+  margin: 0 0 10px;
+  color: #666;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.moodTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.moodTag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background-color: #fff;
+  border: 1px solid #f782a9;
+  color: #f782a9;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.removeMoodTag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #f782a9;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.removeMoodTag:hover {
+  background-color: #f782a9;
+  color: #fff;
+  border-radius: 50%;
+}
+
+.skipMood {
+  display: block;
+  margin: 12px auto 0;
+  border: none;
+  background: none;
+  color: #999;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  transition: color 0.2s ease;
+}
+
+.skipMood:hover {
+  color: #f782a9;
+}
+
+/* =========================
+   LOADING & ERROR STATES
+   ========================= */
+
+.loadingContainer,
+.errorContainer {
+  margin-top: 18px;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.loadingContainer {
+  background-color: #f5f5f5;
+}
+
+.loadingText {
+  margin: 0;
+  color: #999;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.errorContainer {
+  background-color: #fff5f5;
+  border: 1px solid #f9c5c7;
+}
+
+.errorText {
+  margin: 0;
+  color: #d32f2f;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+}
+
+.emptyState {
+  margin: 20px 0 0;
+  color: #999;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* =========================
+   EDITOR
+   ========================= */
+
+.editorSection {
+  margin-bottom: 24px;
+}
+
+.editorTop {
+  margin-bottom: 14px;
+}
+
+.editorTop p {
+  margin: 4px 0 0;
+  color: #999;
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+}
+
+/* The actual journal paper */
+.paper {
+  position: relative;
+  overflow: hidden;
+  min-height: 480px;
+  border: 1px solid #f0d8d9;
+  border-radius: 16px;
+  background-color: #fffdf8;
+
+  /*
+    Subtle journal-paper lines
+  */
+  background-image: linear-gradient(
+    transparent 31px,
+    rgba(247, 130, 169, 0.12) 32px
+  );
+  background-size: 100% 32px;
+
+  box-shadow: 0 8px 30px rgba(247, 130, 169, 0.08);
+}
+
+.paper textarea {
+  display: block;
+  width: 100%;
+  min-height: 420px;
+  padding: 28px 32px;
+  border: none;
+  outline: none;
+  resize: vertical;
+
+  background: transparent;
+
+  color: #333;
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  line-height: 32px;
+}
+
+.paper textarea::placeholder {
+  color: #c6aeb2;
+  font-family: "Playfair Display", serif;
+  font-size: 18px;
+  font-style: italic;
+}
+
+.paper textarea:focus {
+  outline: none;
+}
+
+/* =========================
+   PAPER FOOTER
+   ========================= */
+
+.paperFooter {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 20px;
+
+  border-top: 1px solid rgba(247, 130, 169, 0.12);
+  background: rgba(255, 253, 248, 0.95);
+
+  color: #aaa;
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+}
+
+.attachmentButton {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  border: none;
+  background: none;
+  color: #888;
+  cursor: pointer;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  transition: color 0.2s ease;
+}
+
+.attachmentButton:hover {
+  color: #f782a9;
+}
+
+/* =========================
+   SAVE/ERROR MESSAGES
+   ========================= */
+
+.saveMessage {
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+.saveMessage[data-type="success"] {
+  background-color: #e8f5e9;
+  border: 1px solid #81c784;
+  color: #2e7d32;
+}
+
+.saveMessage[data-type="error"] {
+  background-color: #ffebee;
+  border: 1px solid #ef5350;
+  color: #c62828;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   ACTION BUTTONS
+   ========================= */
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.deleteButton,
+.draftButton,
+.publishButton,
+.reflectButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 12px 20px;
+
+  border-radius: 10px;
+  cursor: pointer;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.draftButton {
+  border: 2px solid #ddd;
+  background: #fff;
+  color: #666;
+}
+
+.draftButton:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  border-color: #999;
+  transform: translateY(-2px);
+}
+
+.deleteButton {
+  border: none;
+  background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(201, 42, 42, 0.2); /* ← Changed from green to red */
+}
+
+.deleteButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(201, 42, 42, 0.3); /* ← Changed from green to red */
+}
+
+.publishButton {
+  border: none;
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+.publishButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+.reflectButton {
+  border: none;
+  background: linear-gradient(135deg, #f9c5c7 0%, #f782a9 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(247, 130, 169, 0.2);
+}
+
+.deleteButton:disabled,
+.draftButton:disabled,
+.publishButton:disabled,
+.reflectButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reflectButton:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(247, 130, 169, 0.3);
+}
+
+/* =========================
+   AI REFLECTION
+   ========================= */
+
+.reflection {
+  padding: 28px;
+  border: 2px solid #f9c5c7;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(247, 130, 169, 0.08);
+
+  animation: fadeIn 0.4s ease;
+}
+
+.reflectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.sparkle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+  background: #fff0f5;
+  color: #f782a9;
+  flex-shrink: 0;
+}
+
+.reflectionHeader h2 {
+  margin: 0;
+  color: #1a1a1a;
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+}
+
+.reflectionHeader p {
+  margin: 3px 0 0;
+  color: #999;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+}
+
+.detectedMood {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px;
+
+  border-radius: 12px;
+  background: #fdf6ff;
+}
+
+.detectedMoodEmojis {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.detectedMoodEmoji {
+  font-size: 34px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detectedMood p {
+  margin: 0 0 3px;
+  color: #999;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+}
+
+.detectedMood strong {
+  color: #1a1a1a;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+}
+
+.reflectionText {
+  margin: 20px 0;
+  color: #555;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.aiDisclaimer {
+  margin: 0 0 18px;
+  color: #aaa;
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.reflectionActions {
+  display: flex;
+  gap: 10px;
+}
+
+.reflectionActions button {
+  padding: 8px 14px;
+  border: 1px solid #f9c5c7;
+  border-radius: 8px;
+  background: #fff;
+  color: #f782a9;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.reflectionActions button:hover {
+  background: #fff5f8;
+}
+
+.lockedWarning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  color: #856404;
+  font-size: 14px;
+}
+
+.draftButton:disabled,
+.publishButton:disabled,
+.reflectButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================
+   ANIMATION
+   ========================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 768px) {
+  .journalContainer {
+    padding: 28px 16px 60px;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    margin-bottom: 32px;
+  }
+
+  .pageHeader h1 {
+    font-size: 34px;
+  }
+
+  .moodOptions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .moodCard {
+    min-height: 72px;
+  }
+
+  .paper {
+    min-height: 400px;
+  }
+
+  .paper textarea {
+    min-height: 340px;
+    padding: 22px 20px;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .draftButton,
+  .publishButton,
+  .reflectButton {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageHeader h1 {
+    font-size: 30px;
+  }
+
+  .moodOptions {
+    gap: 10px;
+  }
+
+  .moodCard {
+    min-height: 64px;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .moodEmoji {
+    font-size: 24px;
+  }
+
+  .selectedMoodsDisplay {
+    margin: 16px 0 12px;
+    padding: 12px;
+  }
+
+  .moodTags {
+    gap: 6px;
+  }
+
+  .moodTag {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .paper textarea {
+    padding: 20px 16px;
+    font-size: 14px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .draftButton,
+  .publishButton,
+  .reflectButton {
+    width: 100%;
+  }
+
+  .reflection {
+    padding: 20px;
+  }
+
+  .reflectionHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .detectedMood {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .reflectionActions {
+    flex-direction: column;
+  }
+
+  .reflectionActions button {
+    width: 100%;
+  }
+}

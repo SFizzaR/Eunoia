@@ -1,0 +1,422 @@
+/* page.module.css */
+
+.container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ==================== HERO SECTION ==================== */
+
+.heroSection {
+  position: relative;
+  width: 100%;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroImageWrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.heroImage {
+  object-fit: cover !important;
+  object-position: center;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
+  backdrop-filter: blur(0.5px);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 40px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.heroTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  animation: slideInUp 0.8s ease-out 0.2s forwards;
+}
+
+.heroTitle {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(42px, 8vw, 72px);
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow:
+    var(--text-shadow),
+    0 0 20px rgba(0, 0, 0, 0.3);
+  letter-spacing: -2px;
+  line-height: 1.1;
+}
+
+.pronunciation {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(16px, 3vw, 24px);
+  color: rgba(255, 255, 255, 0.95);
+  font-style: italic;
+  text-shadow: var(--text-shadow);
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.tagline {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(14px, 2.5vw, 18px);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: var(--text-shadow);
+  font-weight: 400;
+  margin-top: 8px;
+  opacity: 0;
+  animation: slideInUp 0.8s ease-out 0.4s forwards;
+}
+
+.ctaButton {
+  background: linear-gradient(
+    135deg,
+    var(--light-pink) 0%,
+    var(--primary-pink) 100%
+  );
+  color: white;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 28px;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(247, 130, 169, 0.35);
+  margin-top: 12px;
+  opacity: 0;
+  animation: slideInUp 0.8s ease-out 0.6s forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.6s;
+}
+
+.ctaButton:hover::before {
+  left: 100%;
+}
+
+.ctaButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(247, 130, 169, 0.45);
+}
+
+.ctaButton:active {
+  transform: translateY(-1px);
+}
+
+.arrowIcon {
+  transition: transform 0.3s ease;
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
+}
+
+.ctaButton:hover .arrowIcon {
+  transform: translateX(4px);
+}
+
+/* ==================== MOODS SECTION ==================== */
+
+.moodsSection {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--pink-bg) 0%, #f782a9 100%);
+  padding: 80px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.moodsSection::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float 20s ease-in-out infinite;
+}
+
+.moodsSection::after {
+  content: "";
+  position: absolute;
+  bottom: -30%;
+  left: -15%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float 24s ease-in-out infinite reverse;
+}
+
+.moodsContainer {
+  max-width: 1200px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.moodsHeader {
+  text-align: center;
+  margin-bottom: 60px;
+  opacity: 0;
+  animation: fadeIn 0.8s ease-out 0.2s forwards;
+}
+
+.sectionTitle {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: var(--text-shadow);
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.sectionSubtitle {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(14px, 2vw, 18px);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: 400;
+}
+
+.subtitleAccent {
+  display: block;
+  margin-top: 8px;
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.moodsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  width: 100%;
+}
+
+.moodCardWrapper {
+  opacity: 0;
+  animation: slideInUp 0.6s ease-out forwards;
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(-40px) translateX(-10px);
+  }
+  75% {
+    transform: translateY(-20px) translateX(10px);
+  }
+}
+
+.loaded {
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+@media (max-width: 768px) {
+  .heroSection {
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .heroContent {
+    gap: 20px;
+  }
+
+  .heroTitle {
+    font-size: 48px;
+  }
+
+  .pronunciation {
+    font-size: 18px;
+  }
+
+  .tagline {
+    font-size: 14px;
+  }
+
+  .ctaButton {
+    padding: 12px 28px;
+    font-size: 15px;
+  }
+
+  .moodsSection {
+    min-height: auto;
+    padding: 60px 20px;
+  }
+
+  .moodsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .sectionTitle {
+    font-size: 40px;
+  }
+
+  .sectionSubtitle {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 36px;
+  }
+
+  .pronunciation {
+    font-size: 14px;
+  }
+
+  .tagline {
+    font-size: 12px;
+  }
+
+  .ctaButton {
+    padding: 11px 24px;
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  .arrowIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .moodsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .sectionTitle {
+    font-size: 32px;
+  }
+
+  .sectionSubtitle {
+    font-size: 13px;
+  }
+
+  .moodsSection {
+    padding: 40px 16px;
+  }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .heroContent,
+  .heroTextGroup,
+  .ctaButton,
+  .moodCardWrapper,
+  .moodsHeader {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Focus states for keyboard navigation */
+.ctaButton:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  .ctaButton {
+    border: 2px solid white;
+  }
+}

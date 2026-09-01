@@ -1,0 +1,194 @@
+Attachmentlist.module · CSS .attachmentContainer {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 2px solid #f0f0f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 1rem 0;
+  font-family: "Poppins", sans-serif;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+}
+
+.fileTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Poppins", sans-serif;
+}
+
+.fileTable thead {
+  background-color: #f9f9f9;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.fileTable th {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #666;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fileRow {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+}
+
+.fileRow:hover {
+  background-color: #fafafa;
+}
+
+.fileRow:last-child {
+  border-bottom: none;
+}
+
+.fileRow td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.fileName {
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.fileIcon {
+  display: flex;
+  align-items: center;
+  color: #f782a9;
+  flex-shrink: 0;
+}
+
+.nameText {
+  color: #0066cc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  word-break: break-word;
+  max-width: 300px;
+}
+
+.nameText:hover {
+  color: #f782a9;
+  text-decoration: underline;
+}
+
+.fileType {
+  color: #999;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.fileSize {
+  color: #999;
+  font-size: 0.875rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.previewBtn,
+.downloadBtn,
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.previewBtn {
+  background-color: #e3f2fd;
+  color: #0066cc;
+}
+
+.previewBtn:hover:not(:disabled) {
+  background-color: #bbdefb;
+  transform: scale(1.05);
+}
+
+.downloadBtn {
+  background-color: #f0f4ff;
+  color: #5956e9;
+}
+
+.downloadBtn:hover:not(:disabled) {
+  background-color: #e8ecff;
+  transform: scale(1.05);
+}
+
+.deleteBtn {
+  background-color: #ffe3e3;
+  color: #d32f2f;
+}
+
+.deleteBtn:hover:not(:disabled) {
+  background-color: #ffcdd2;
+  transform: scale(1.05);
+}
+
+.previewBtn:disabled,
+.downloadBtn:disabled,
+.deleteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .attachmentContainer {
+    padding: 1rem;
+  }
+
+  .fileTable th,
+  .fileRow td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .nameText {
+    max-width: 150px;
+  }
+
+  .fileType {
+    display: none;
+  }
+}
