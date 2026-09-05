@@ -432,6 +432,12 @@ export class EntriesService {
         },
       });
 
+      await tx.entryReflection.delete({
+        where: {
+          entryId: id,
+        },
+      });
+
       // Finally delete the entry
       return await tx.entry.delete({
         where: {

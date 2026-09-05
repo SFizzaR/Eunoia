@@ -20,6 +20,6 @@ export class CreateEntryEmotionDto {
   @IsBoolean()
   aiDetected?: boolean;
 
-  @IsDecimal()
+  @IsNumber()
   confidence?: number;
 }

@@ -9,14 +9,19 @@ import {
   UseGuards,
   Request,
   Param,
+  BadRequestException,
 } from '@nestjs/common';
 import { EntriesService } from './entries.service';
 import { JwtAuthGuard } from 'src/auth/gaurds/jwt-auth.gaurd';
 import { CreateEntryDto } from './dto/create-entries-dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Controller('entries')
 export class EntriesController {
-  constructor(private readonly entriesService: EntriesService) {}
+  constructor(
+    private readonly entriesService: EntriesService,
+    private prisma: PrismaService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -43,7 +48,11 @@ export class EntriesController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEntryDto: any, @Request() req) {
-    return this.entriesService.update(+id, updateEntryDto, req.user.userId);
+    const entryId = parseInt(id, 10);
+    if (!entryId || isNaN(entryId)) {
+      throw new BadRequestException('Invalid entry ID');
+    }
+    return this.entriesService.update(entryId, updateEntryDto, req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)

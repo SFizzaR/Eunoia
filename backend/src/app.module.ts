@@ -11,6 +11,7 @@ import { EntryEmotionsModule } from './entry_emotions/entry_emotions.module';
 import { EmotionsModule } from './emotions/emotions.module';
 import { QuotesModule } from './quotes/quote.module';
 import { AttachmentsModule } from './attachments/attachments.module';
+import { EntryReflectionsModule } from './entry_reflections/entry_reflections.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AttachmentsModule } from './attachments/attachments.module';
     EmotionsModule,
     QuotesModule,
     AttachmentsModule,
+    EntryReflectionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
