@@ -327,7 +327,7 @@ export default function Register() {
           {/* Terms & privacy */}
           <p className={styles.termsText}>
             By registering, you agree to our{" "}
-            <Link href="/privacy" className={styles.link}>
+            <Link href="/PrivacyPolicy" className={styles.link}>
               Privacy Policy
             </Link>
           </p>

@@ -1,8 +1,19 @@
 import styles from "../app/page.module.css";
-import { moods } from "@/constants/moods";
 import Mood from "./mood";
-
+import { MoodData } from "@/types/moods";
+import { fetchEmotions } from "@/hooks/useEmotions";
+import { useState, useEffect } from "react";
 export function MoodsSection() {
+  const [moods, setMoods] = useState<MoodData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchEmotions()
+      .then(setMoods)
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  if (isLoading) return <div>Loading moods...</div>;
   return (
     <section className={styles.moodsSection} id="Meet-the-moods">
       <div className={styles.moodsContainer}>
@@ -21,15 +32,14 @@ export function MoodsSection() {
         <div className={styles.moodsGrid}>
           {moods.map((moodData, index) => (
             <div
-              key={moodData.mood}
+              key={moodData.name}
               className={styles.moodCardWrapper}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <Mood
-                mood={moodData.mood}
+                name={moodData.name}
                 color={moodData.color}
-                filepath={moodData.filepath}
-                description={moodData.description}
+                animatedEmojiUrl={moodData.animatedEmojiUrl}
               />
             </div>
           ))}

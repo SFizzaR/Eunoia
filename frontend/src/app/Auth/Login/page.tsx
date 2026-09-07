@@ -10,7 +10,6 @@ import { useAuth } from "@/app/context/AuthContext";
 interface FormData {
   email: string;
   password: string;
-  rememberMe: boolean;
 }
 
 interface FormErrors {
@@ -25,7 +24,6 @@ export default function Login() {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
-    rememberMe: false,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -174,9 +172,6 @@ export default function Login() {
               <label htmlFor="password" className={styles.label}>
                 Password
               </label>
-              <Link href="/forgot-password" className={styles.forgotLink}>
-                Forgot?
-              </Link>
             </div>
             <div className={styles.passwordInputWrapper}>
               <input
@@ -209,21 +204,6 @@ export default function Login() {
             {errors.password && (
               <p className={styles.fieldError}>{errors.password}</p>
             )}
-          </div>
-
-          {/* Remember me */}
-          <div className={styles.rememberMe}>
-            <input
-              type="checkbox"
-              id="rememberMe"
-              name="rememberMe"
-              checked={formData.rememberMe}
-              onChange={handleChange}
-              disabled={isLoading}
-            />
-            <label htmlFor="rememberMe" className={styles.rememberLabel}>
-              Remember me
-            </label>
           </div>
 
           {/* Submit button */}

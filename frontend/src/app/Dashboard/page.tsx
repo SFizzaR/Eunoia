@@ -6,31 +6,15 @@ import { useRouter } from "next/navigation";
 import { useTokenExpiration } from "../../../hooks/useTokenExpiration";
 import { logout } from "../../../lib/auth";
 import { useCachedQuote } from "../../../hooks/useCachedQuotes";
-
-interface JournalEntry {
-  id: string;
-  content: string;
-  date: string;
-  title?: string;
-  isDraft: boolean;
-  emotions: Array<{ id: string; emotionName: string; emoji: string }>;
-}
+import { MoodEmoji } from "@/components/MoodEmoji";
 
 interface Emotion {
   emotionId: string;
   emotionName: string;
-  emoji: string;
+  animatedEmojiUrl: string;
   entryCount: number;
+  color: string;
 }
-
-// Consistent folder colors - not tied to emotions
-const FOLDER_COLORS = [
-  "#f782a9", // Pink
-  "#ff6b9d", // Deep pink
-  "#f56a9f", // Lighter pink
-  "#e75480", // Darker pink
-  "#d63869", // Even darker
-];
 
 export default function Dashboard() {
   useTokenExpiration();
@@ -270,10 +254,6 @@ export default function Dashboard() {
 
   const handleAddEntry = () => {
     router.push("/Journal");
-  };
-
-  const getColorForEmotion = (index: number) => {
-    return FOLDER_COLORS[index % FOLDER_COLORS.length];
   };
 
   return (
@@ -646,7 +626,7 @@ export default function Dashboard() {
                   .filter((emotion) => emotion.entryCount > 0)
                   .map((emotion, index) => {
                     const entryCount = emotion.entryCount; // ✅ Get from API response
-                    const folderColor = getColorForEmotion(index);
+                    const folderColor = emotion.color;
                     return (
                       <div
                         key={emotion.emotionId}
@@ -673,7 +653,10 @@ export default function Dashboard() {
                           {/* Emotion Header */}
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex flex-col gap-2">
-                              <span className="text-3xl">{emotion.emoji}</span>
+                              <MoodEmoji
+                                animatedEmojiUrl={emotion.animatedEmojiUrl}
+                                size={60}
+                              />
 
                               <h3
                                 className="text-xl font-bold"

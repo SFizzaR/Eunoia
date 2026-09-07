@@ -7,19 +7,14 @@ import styles from "./journal.module.css";
 import { AttachmentList } from "../components/Attachmentlist";
 import { useTokenExpiration } from "../../../hooks/useTokenExpiration";
 import { logout } from "../../../lib/auth";
-
+import { fetchEmotions } from "@/hooks/useEmotions";
+import { Attachment } from "@/types/attachment";
+import { MoodEmoji } from "@/components/MoodEmoji";
+import { Loader } from "lucide-react";
 interface Mood {
   id: string;
   name: string;
-  emoji: string;
-}
-
-interface Attachment {
-  id: number;
-  fileName: string;
-  fileUrl: string;
-  fileType: string;
-  fileSize: number;
+  animatedEmojiUrl: string;
 }
 
 export default function Journal() {
@@ -48,7 +43,15 @@ export default function Journal() {
   const [loadingEntry, setLoadingEntry] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [token, setToken] = useState<string | null>(null);
-
+  const [detectedMoods, setDetectedMoods] = useState<string[]>([]);
+  const [previousContentHash, setPreviousContentHash] = useState<string | null>(
+    null,
+  );
+  const [generatedReflection, setGeneratedReflection] = useState<{
+    summary: string;
+    advice: string | null;
+  } | null>(null);
+  const [reflectionLoading, setReflectionLoading] = useState(false);
   useEffect(() => {
     // Only runs on client-side
     setToken(localStorage.getItem("token"));
@@ -92,14 +95,45 @@ export default function Journal() {
 
         // Load selected moods
         if (data.emotions && Array.isArray(data.emotions)) {
-          const moodNames = data.emotions
+          const userSelectedMoods = data.emotions
+            .filter((e: any) => e.userSelected) // ← Only user-selected
             .map((e: any) => e.emotion?.name || "")
             .filter(Boolean);
-          setSelectedMoods(moodNames);
+          setSelectedMoods(userSelectedMoods);
+
+          // ✅ NEW: Also load AI-detected moods
+          const aiDetectedMoods = data.emotions
+            .filter((e: any) => e.aiDetected) // ← Only AI-detected
+            .map((e: any) => e.emotion?.name || "")
+            .filter(Boolean);
+          setDetectedMoods(aiDetectedMoods);
+          console.log("✅ AI detected moods on load:", aiDetectedMoods);
         }
 
         // Fetch attachments for this entry
         await fetchAttachments(data.id);
+
+        // ✅ Fetch existing reflection if it exists
+        try {
+          const reflectionResponse = await fetch(
+            `http://localhost:3000/entry-reflections/${data.id}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+
+          if (reflectionResponse.ok) {
+            const reflectionData = await reflectionResponse.json();
+            console.log("✅ Found existing reflection:", reflectionData);
+            setGeneratedReflection(reflectionData);
+            setShowReflection(true); // Auto-show the reflection
+          }
+        } catch (err) {
+          console.log("No reflection found (this is ok)");
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load entry");
         console.error("Error loading entry:", err);
@@ -237,20 +271,23 @@ export default function Journal() {
       setSaving(true);
       setdeleteError(null);
 
-      const res = await fetch(`http://localhost:3000/entries/${draftEntryId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `http://localhost:3000/entries/${draftEntryId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
-      if (res.status === 401) {
+      if (response.status === 401) {
         logout();
         return;
       }
 
-      if (!res.ok) {
+      if (!response.ok) {
         throw new Error("Failed to delete entry");
       }
 
@@ -264,7 +301,7 @@ export default function Journal() {
 
       // Redirect back to entries after 1 second
       setTimeout(() => {
-        router.push("/Journal/entries");
+        router.push("/Dashboard");
       }, 1000);
     } catch (error) {
       setdeleteError(
@@ -392,23 +429,7 @@ export default function Journal() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch("http://localhost:3000/emotions", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.status === 401) {
-          logout();
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch emotions");
-        }
-
-        const data = await response.json();
+        const data = await fetchEmotions();
         setMoods(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -420,6 +441,172 @@ export default function Journal() {
 
     fetchMoods();
   }, []);
+
+  const hashContent = (content: string): string => {
+    return `${content.length}-${content.charCodeAt(0)}-${content.charCodeAt(content.length - 1)}`;
+  };
+  const generateReflection = async (detectedMoods: string[]) => {
+    if (!thoughts.trim()) {
+      setSaveError("Write something first");
+      return;
+    }
+
+    if (!draftEntryId) {
+      setSaveError("Save entry first");
+      return;
+    }
+
+    try {
+      setReflectionLoading(true);
+      setSaveError(null);
+
+      const response = await fetch("http://localhost:3000/entry-reflections", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          entryId: draftEntryId,
+          content: thoughts,
+          emotions: detectedMoods,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate reflection");
+      }
+
+      const data = await response.json();
+      setGeneratedReflection(data.reflection);
+      setShowReflection(true);
+    } catch (error) {
+      console.error("Error generating reflection:", error);
+      setSaveError(
+        error instanceof Error
+          ? error.message
+          : "Failed to generate reflection",
+      );
+    } finally {
+      setReflectionLoading(false);
+    }
+  };
+
+  const handleGetReflection = async () => {
+    if (!thoughts.trim()) {
+      setSaveError("Write something first");
+      return;
+    }
+
+    if (!draftEntryId) {
+      setSaveError("Save entry first");
+      return;
+    }
+
+    try {
+      setReflectionLoading(true);
+      setSaveError(null);
+
+      // 1. Update entry
+      const updateResponse = await fetch(
+        `http://localhost:3000/entries/${draftEntryId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content: thoughts,
+            IsDraft: true,
+            emotionids: selectedMoods
+              .map((name) => moods.find((m) => m.name === name)?.id)
+              .filter(Boolean),
+          }),
+        },
+      );
+
+      if (!updateResponse.ok) {
+        throw new Error("Failed to update entry");
+      }
+
+      const updatedEntry = await updateResponse.json();
+      console.log("✅ Step 1 Complete:", updatedEntry);
+
+      // 2. Detect moods (AI)
+      console.log("🤖 Step 2: Detecting moods...");
+      console.log("🤖 Token:", token); // ← Debug token
+      console.log("🤖 Draft Entry ID:", draftEntryId); // ← Debug ID
+      console.log("🤖 Thoughts length:", thoughts.length); // ← Debug content
+
+      // 2. Detect moods (AI)
+      const moodResponse = await fetch(
+        "http://localhost:3000/entry-emotions/detect-mood",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content: thoughts,
+            entryId: draftEntryId,
+          }),
+        },
+      );
+      console.log("🤖 Got mood response, status:", moodResponse.status);
+
+      if (!moodResponse.ok) {
+        throw new Error("Failed to detect mood");
+      }
+
+      const moodData = await moodResponse.json();
+      console.log("🔍 Full moodData:", moodData); // ← ADD THIS
+      console.log("🔍 detectedEmotions:", moodData.detectedEmotions); // ← ADD THIS
+
+      // ✅ Extract detected emotions and store separately
+      const detectedEmotions = moodData.detectedEmotions.map(
+        (e: any) => e.emotionName,
+      );
+      console.log("🔍 Final detectedEmotions:", detectedEmotions); // ← ADD THIS
+
+      setDetectedMoods(detectedEmotions); // ← Store separately!
+
+      console.log("Detected moods:", detectedEmotions);
+
+      // 3. Generate reflection with detected moods
+      const reflectionResponse = await fetch(
+        "http://localhost:3000/entry-reflections",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            entryId: draftEntryId,
+            content: thoughts,
+            emotions: detectedEmotions, // ← Pass detected moods
+          }),
+        },
+      );
+
+      if (!reflectionResponse.ok) {
+        throw new Error("Failed to generate reflection");
+      }
+
+      const reflectionData = await reflectionResponse.json();
+      setGeneratedReflection(reflectionData.reflection);
+      setShowReflection(true);
+    } catch (error) {
+      console.error("Error:", error);
+      setSaveError(
+        error instanceof Error ? error.message : "An error occurred",
+      );
+    } finally {
+      setReflectionLoading(false);
+    }
+  };
 
   const now = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -518,7 +705,11 @@ export default function Journal() {
                     aria-pressed={selectedMoods.includes(mood.name)}
                     disabled={isLocked}
                   >
-                    <span className={styles.moodEmoji}>{mood.emoji}</span>
+                    <MoodEmoji
+                      animatedEmojiUrl={mood.animatedEmojiUrl}
+                      size={40}
+                    />
+
                     <span>{mood.name}</span>
                   </button>
                 ))}
@@ -532,7 +723,12 @@ export default function Journal() {
                       const moodObj = moods.find((m) => m.name === mood);
                       return (
                         <div key={mood} className={styles.moodTag}>
-                          <span>{moodObj?.emoji}</span>
+                          {moodObj?.animatedEmojiUrl && (
+                            <MoodEmoji
+                              animatedEmojiUrl={moodObj.animatedEmojiUrl}
+                              size={50}
+                            />
+                          )}{" "}
                           <span>{mood}</span>
                           <button
                             className={styles.removeMoodTag}
@@ -666,7 +862,14 @@ export default function Journal() {
             disabled={saving || !thoughts.trim() || isLocked}
             title={isLocked ? "Published entries cannot be edited" : ""}
           >
-            {saving ? "Saving..." : "Save as Draft"}
+            {saving ? (
+              <>
+                <Loader size={18} className="animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save as Draft"
+            )}
           </button>
 
           <button
@@ -675,32 +878,48 @@ export default function Journal() {
             disabled={saving || !thoughts.trim() || isLocked}
             title={isLocked ? "Entry already published" : ""}
           >
-            {saving ? "Publishing..." : "Publish Entry"}
+            {saving ? (
+              <>
+                <Loader size={18} className="animate-spin" />
+                Publishing...
+              </>
+            ) : (
+              "Publish Entry"
+            )}
           </button>
 
           <button
             className={styles.reflectButton}
-            onClick={() => setShowReflection(true)}
-            disabled={!thoughts.trim() || isLocked}
+            onClick={handleGetReflection}
+            disabled={reflectionLoading || !thoughts.trim() || isLocked}
             title={
               !thoughts.trim()
                 ? "Write something first"
                 : isLocked
                   ? "Published entries cannot be reflected on"
-                  : ""
+                  : "Generate AI reflection"
             }
           >
-            <Sparkles size={18} />
-            Reflect on this
+            {reflectionLoading ? (
+              <>
+                <Loader size={18} className="animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles size={18} />
+                Reflect on this
+              </>
+            )}
           </button>
 
           <button
             className={styles.deleteButton}
             onClick={handleDelete}
-            disabled={!draftEntryId}
+            disabled={!draftEntryId || saving}
             title={!draftEntryId ? "Entry must be saved first" : ""}
           >
-            Delete
+            {saving ? "Deleting..." : "Delete"}
           </button>
         </div>
 
@@ -709,7 +928,11 @@ export default function Journal() {
           <section className={styles.reflection}>
             <div className={styles.reflectionHeader}>
               <div className={styles.sparkle}>
-                <Sparkles size={20} />
+                {reflectionLoading ? (
+                  <Loader size={20} className="animate-spin" />
+                ) : (
+                  <Sparkles size={20} />
+                )}
               </div>
 
               <div>
@@ -718,50 +941,103 @@ export default function Journal() {
               </div>
             </div>
 
-            <div className={styles.detectedMood}>
-              <div className={styles.detectedMoodEmojis}>
-                {selectedMoods.length > 0 ? (
-                  selectedMoods.map((mood) => {
-                    const moodObj = moods.find((m) => m.name === mood);
-                    return (
-                      <span key={mood} className={styles.detectedMoodEmoji}>
-                        {moodObj?.emoji}
-                      </span>
+            {reflectionLoading && (
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "#999",
+                  marginTop: "1rem",
+                }}
+              >
+                Generating reflection... This may take a moment.
+              </p>
+            )}
+
+            {/* Show DETECTED MOODS (AI) */}
+            {detectedMoods.length > 0 && !reflectionLoading && (
+              <div className={styles.detectedMood}>
+                <div className={styles.detectedMoodEmojis}>
+                  {detectedMoods.map((mood) => {
+                    // Case-insensitive mood lookup
+                    const moodObj = moods.find(
+                      (m) => m.name.toLowerCase() === mood.toLowerCase(),
                     );
-                  })
-                ) : (
-                  <span className={styles.detectedMoodEmoji}>💭</span>
-                )}
-              </div>
+                    console.log(`Looking up mood: "${mood}"`, moodObj); // Debug
+                    return (
+                      <div key={mood} className={styles.detectedMoodEmoji}>
+                        {moodObj?.animatedEmojiUrl ? (
+                          <MoodEmoji
+                            animatedEmojiUrl={moodObj.animatedEmojiUrl}
+                            size={50}
+                          />
+                        ) : (
+                          <span title={`${mood} emoji not found`}>💭</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
 
-              <div>
-                <p>Your entry seems to reflect</p>
-                <strong>
-                  {selectedMoods.length > 0
-                    ? selectedMoods.join(", ")
-                    : "some thoughts or feelings"}
-                </strong>
+                <div>
+                  <p>🤖 AI Detected:</p>
+                  <strong>{detectedMoods.join(", ")}</strong>
+                  <p
+                    style={{
+                      fontSize: "0.875rem",
+                      color: "#999",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    (The AI detected these emotions in your entry)
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
 
-            <p className={styles.reflectionText}>
-              It sounds like you have a lot on your mind right now. You don't
-              have to figure everything out at once. Taking a small break or
-              talking to someone you trust might help.
-            </p>
+            {/* Show SUMMARY */}
+            {generatedReflection?.summary && !reflectionLoading && (
+              <div style={{ marginTop: "1.5rem" }}>
+                <p className={styles.reflectionText}>
+                  <strong>📝 Summary:</strong>
+                </p>
+                <p className={styles.reflectionText}>
+                  {generatedReflection.summary}
+                </p>
+              </div>
+            )}
+
+            {/* Show ADVICE */}
+            {generatedReflection?.advice && !reflectionLoading && (
+              <div style={{ marginTop: "1.5rem" }}>
+                <p className={styles.reflectionText}>
+                  <strong>💡 My Advice:</strong>
+                </p>
+                <p className={styles.reflectionText}>
+                  {generatedReflection.advice}
+                </p>
+              </div>
+            )}
 
             <p className={styles.aiDisclaimer}>
-              This is a reflection, not a diagnosis.
+              ✨ This reflection was generated by AI and is not a diagnosis.
             </p>
 
-            <div className={styles.reflectionActions}>
-              <button onClick={() => setShowReflection(false)}>
-                That feels right
-              </button>
-              <button onClick={() => setShowReflection(false)}>
-                Not quite
-              </button>
-            </div>
+            {/* ✅ Only show action buttons if entry is NOT published */}
+            {!isLocked && (
+              <div className={styles.reflectionActions}>
+                <button
+                  onClick={() => {
+                    setGeneratedReflection(null);
+                    generateReflection(detectedMoods);
+                  }}
+                  disabled={reflectionLoading}
+                >
+                  {reflectionLoading
+                    ? "Generating..."
+                    : "Get another reflection"}
+                </button>
+              </div>
+            )}
           </section>
         )}
       </main>

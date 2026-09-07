@@ -2,25 +2,14 @@
 import { useLottie } from "lottie-react";
 import { useEffect, useState } from "react";
 import styles from "./Mood.module.css";
+import { MoodData } from "@/types/moods";
 
-interface MoodProps {
-  mood: string;
-  color: string;
-  filepath: string;
-  description: string;
-}
-
-export default function Mood({
-  mood,
-  color,
-  filepath,
-  description,
-}: MoodProps) {
+export default function Mood({ name, color, animatedEmojiUrl }: MoodData) {
   const [emoji, setEmoji] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch(filepath)
+    fetch(animatedEmojiUrl)
       .then((res) => res.json())
       .then((json) => {
         setEmoji(json);
@@ -30,7 +19,7 @@ export default function Mood({
         console.error("Error loading animation:", err);
         setIsLoading(false);
       });
-  }, [filepath]);
+  }, [animatedEmojiUrl]);
 
   const { View } = useLottie({
     animationData: emoji,
@@ -47,13 +36,11 @@ export default function Mood({
       </div>
 
       <div className={styles.moodHeader}>
-        <h3 className={styles.moodName}>{mood}</h3>
+        <h3 className={styles.moodName}>{name}</h3>
       </div>
 
-      <p className={styles.moodDescription}>{description}</p>
-
       <div className={styles.moodFooter}>
-        <span className={styles.badge}>{mood}</span>
+        <span className={styles.badge}>{name}</span>
       </div>
 
       <div className={styles.hoverEffect}></div>

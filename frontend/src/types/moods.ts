@@ -1,6 +1,5 @@
 export interface MoodData {
-  mood: string;
+  name: string;
   color: string;
-  filepath: string;
-  description: string;
+  animatedEmojiUrl: string;
 }
