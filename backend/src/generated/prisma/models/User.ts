@@ -40,8 +40,6 @@ export type UserMinAggregateOutputType = {
   firstname: string | null
   lastname: string | null
   password: string | null
-  resetToken: string | null
-  resetTokenExpiry: Date | null
   profileImageUrl: string | null
   coverImageUrl: string | null
   createdAt: Date | null
@@ -54,8 +52,6 @@ export type UserMaxAggregateOutputType = {
   firstname: string | null
   lastname: string | null
   password: string | null
-  resetToken: string | null
-  resetTokenExpiry: Date | null
   profileImageUrl: string | null
   coverImageUrl: string | null
   createdAt: Date | null
@@ -68,8 +64,6 @@ export type UserCountAggregateOutputType = {
   firstname: number
   lastname: number
   password: number
-  resetToken: number
-  resetTokenExpiry: number
   profileImageUrl: number
   coverImageUrl: number
   createdAt: number
@@ -92,8 +86,6 @@ export type UserMinAggregateInputType = {
   firstname?: true
   lastname?: true
   password?: true
-  resetToken?: true
-  resetTokenExpiry?: true
   profileImageUrl?: true
   coverImageUrl?: true
   createdAt?: true
@@ -106,8 +98,6 @@ export type UserMaxAggregateInputType = {
   firstname?: true
   lastname?: true
   password?: true
-  resetToken?: true
-  resetTokenExpiry?: true
   profileImageUrl?: true
   coverImageUrl?: true
   createdAt?: true
@@ -120,8 +110,6 @@ export type UserCountAggregateInputType = {
   firstname?: true
   lastname?: true
   password?: true
-  resetToken?: true
-  resetTokenExpiry?: true
   profileImageUrl?: true
   coverImageUrl?: true
   createdAt?: true
@@ -221,8 +209,6 @@ export type UserGroupByOutputType = {
   firstname: string
   lastname: string
   password: string
-  resetToken: string | null
-  resetTokenExpiry: Date | null
   profileImageUrl: string | null
   coverImageUrl: string | null
   createdAt: Date
@@ -258,8 +244,6 @@ export type UserWhereInput = {
   firstname?: Prisma.StringFilter<"User"> | string
   lastname?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
-  resetToken?: Prisma.StringNullableFilter<"User"> | string | null
-  resetTokenExpiry?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   profileImageUrl?: Prisma.StringNullableFilter<"User"> | string | null
   coverImageUrl?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -273,8 +257,6 @@ export type UserOrderByWithRelationInput = {
   firstname?: Prisma.SortOrder
   lastname?: Prisma.SortOrder
   password?: Prisma.SortOrder
-  resetToken?: Prisma.SortOrderInput | Prisma.SortOrder
-  resetTokenExpiry?: Prisma.SortOrderInput | Prisma.SortOrder
   profileImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -291,8 +273,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   firstname?: Prisma.StringFilter<"User"> | string
   lastname?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
-  resetToken?: Prisma.StringNullableFilter<"User"> | string | null
-  resetTokenExpiry?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   profileImageUrl?: Prisma.StringNullableFilter<"User"> | string | null
   coverImageUrl?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -306,8 +286,6 @@ export type UserOrderByWithAggregationInput = {
   firstname?: Prisma.SortOrder
   lastname?: Prisma.SortOrder
   password?: Prisma.SortOrder
-  resetToken?: Prisma.SortOrderInput | Prisma.SortOrder
-  resetTokenExpiry?: Prisma.SortOrderInput | Prisma.SortOrder
   profileImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -328,8 +306,6 @@ export type UserScalarWhereWithAggregatesInput = {
   firstname?: Prisma.StringWithAggregatesFilter<"User"> | string
   lastname?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
-  resetToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  resetTokenExpiry?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   profileImageUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   coverImageUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -341,8 +317,6 @@ export type UserCreateInput = {
   firstname: string
   lastname: string
   password: string
-  resetToken?: string | null
-  resetTokenExpiry?: Date | string | null
   profileImageUrl?: string | null
   coverImageUrl?: string | null
   createdAt?: Date | string
@@ -356,8 +330,6 @@ export type UserUncheckedCreateInput = {
   firstname: string
   lastname: string
   password: string
-  resetToken?: string | null
-  resetTokenExpiry?: Date | string | null
   profileImageUrl?: string | null
   coverImageUrl?: string | null
   createdAt?: Date | string
@@ -370,8 +342,6 @@ export type UserUpdateInput = {
   firstname?: Prisma.StringFieldUpdateOperationsInput | string
   lastname?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
-  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -385,8 +355,6 @@ export type UserUncheckedUpdateInput = {
   firstname?: Prisma.StringFieldUpdateOperationsInput | string
   lastname?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
-  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -400,8 +368,6 @@ export type UserCreateManyInput = {
   firstname: string
   lastname: string
   password: string
-  resetToken?: string | null
-  resetTokenExpiry?: Date | string | null
   profileImageUrl?: string | null
   coverImageUrl?: string | null
   createdAt?: Date | string
@@ -413,8 +379,6 @@ export type UserUpdateManyMutationInput = {
   firstname?: Prisma.StringFieldUpdateOperationsInput | string
   lastname?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
-  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -427,8 +391,6 @@ export type UserUncheckedUpdateManyInput = {
   firstname?: Prisma.StringFieldUpdateOperationsInput | string
   lastname?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
-  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -441,8 +403,6 @@ export type UserCountOrderByAggregateInput = {
   firstname?: Prisma.SortOrder
   lastname?: Prisma.SortOrder
   password?: Prisma.SortOrder
-  resetToken?: Prisma.SortOrder
-  resetTokenExpiry?: Prisma.SortOrder
   profileImageUrl?: Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -459,8 +419,6 @@ export type UserMaxOrderByAggregateInput = {
   firstname?: Prisma.SortOrder
   lastname?: Prisma.SortOrder
   password?: Prisma.SortOrder
-  resetToken?: Prisma.SortOrder
-  resetTokenExpiry?: Prisma.SortOrder
   profileImageUrl?: Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -473,8 +431,6 @@ export type UserMinOrderByAggregateInput = {
   firstname?: Prisma.SortOrder
   lastname?: Prisma.SortOrder
   password?: Prisma.SortOrder
-  resetToken?: Prisma.SortOrder
-  resetTokenExpiry?: Prisma.SortOrder
   profileImageUrl?: Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -496,10 +452,6 @@ export type StringFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -533,8 +485,6 @@ export type UserCreateWithoutEntriesInput = {
   firstname: string
   lastname: string
   password: string
-  resetToken?: string | null
-  resetTokenExpiry?: Date | string | null
   profileImageUrl?: string | null
   coverImageUrl?: string | null
   createdAt?: Date | string
@@ -547,8 +497,6 @@ export type UserUncheckedCreateWithoutEntriesInput = {
   firstname: string
   lastname: string
   password: string
-  resetToken?: string | null
-  resetTokenExpiry?: Date | string | null
   profileImageUrl?: string | null
   coverImageUrl?: string | null
   createdAt?: Date | string
@@ -576,8 +524,6 @@ export type UserUpdateWithoutEntriesInput = {
   firstname?: Prisma.StringFieldUpdateOperationsInput | string
   lastname?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
-  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -590,8 +536,6 @@ export type UserUncheckedUpdateWithoutEntriesInput = {
   firstname?: Prisma.StringFieldUpdateOperationsInput | string
   lastname?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
-  resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -635,8 +579,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   firstname?: boolean
   lastname?: boolean
   password?: boolean
-  resetToken?: boolean
-  resetTokenExpiry?: boolean
   profileImageUrl?: boolean
   coverImageUrl?: boolean
   createdAt?: boolean
@@ -651,8 +593,6 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   firstname?: boolean
   lastname?: boolean
   password?: boolean
-  resetToken?: boolean
-  resetTokenExpiry?: boolean
   profileImageUrl?: boolean
   coverImageUrl?: boolean
   createdAt?: boolean
@@ -665,8 +605,6 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   firstname?: boolean
   lastname?: boolean
   password?: boolean
-  resetToken?: boolean
-  resetTokenExpiry?: boolean
   profileImageUrl?: boolean
   coverImageUrl?: boolean
   createdAt?: boolean
@@ -679,15 +617,13 @@ export type UserSelectScalar = {
   firstname?: boolean
   lastname?: boolean
   password?: boolean
-  resetToken?: boolean
-  resetTokenExpiry?: boolean
   profileImageUrl?: boolean
   coverImageUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstname" | "lastname" | "password" | "resetToken" | "resetTokenExpiry" | "profileImageUrl" | "coverImageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstname" | "lastname" | "password" | "profileImageUrl" | "coverImageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   entries?: boolean | Prisma.User$entriesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -706,8 +642,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     firstname: string
     lastname: string
     password: string
-    resetToken: string | null
-    resetTokenExpiry: Date | null
     profileImageUrl: string | null
     coverImageUrl: string | null
     createdAt: Date
@@ -1141,8 +1075,6 @@ export interface UserFieldRefs {
   readonly firstname: Prisma.FieldRef<"User", 'String'>
   readonly lastname: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
-  readonly resetToken: Prisma.FieldRef<"User", 'String'>
-  readonly resetTokenExpiry: Prisma.FieldRef<"User", 'DateTime'>
   readonly profileImageUrl: Prisma.FieldRef<"User", 'String'>
   readonly coverImageUrl: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>

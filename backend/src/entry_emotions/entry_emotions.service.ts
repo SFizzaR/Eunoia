@@ -72,7 +72,7 @@ export class EntryEmotionsService {
                 select: {
                   id: true,
                   name: true,
-                  emoji: true,
+                  animatedEmojiUrl: true,
                   category: true,
                 },
               },

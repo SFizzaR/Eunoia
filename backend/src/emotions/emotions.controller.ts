@@ -15,11 +15,6 @@ import { UpdateEmotionDto } from './dto/update-emotion.dto';
 export class EmotionsController {
   constructor(private readonly emotionsService: EmotionsService) {}
 
-  @Post()
-  create(@Body() createEmotionDto: CreateEmotionDto) {
-    return this.emotionsService.create(createEmotionDto);
-  }
-
   @Get()
   findAll() {
     return this.emotionsService.findAll();

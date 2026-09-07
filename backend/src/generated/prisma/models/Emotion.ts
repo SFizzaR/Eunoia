@@ -38,7 +38,8 @@ export type EmotionMinAggregateOutputType = {
   id: number | null
   name: string | null
   category: string | null
-  emoji: string | null
+  animatedEmojiUrl: string | null
+  color: string | null
   createdAt: Date | null
 }
 
@@ -46,7 +47,8 @@ export type EmotionMaxAggregateOutputType = {
   id: number | null
   name: string | null
   category: string | null
-  emoji: string | null
+  animatedEmojiUrl: string | null
+  color: string | null
   createdAt: Date | null
 }
 
@@ -54,7 +56,8 @@ export type EmotionCountAggregateOutputType = {
   id: number
   name: number
   category: number
-  emoji: number
+  animatedEmojiUrl: number
+  color: number
   createdAt: number
   _all: number
 }
@@ -72,7 +75,8 @@ export type EmotionMinAggregateInputType = {
   id?: true
   name?: true
   category?: true
-  emoji?: true
+  animatedEmojiUrl?: true
+  color?: true
   createdAt?: true
 }
 
@@ -80,7 +84,8 @@ export type EmotionMaxAggregateInputType = {
   id?: true
   name?: true
   category?: true
-  emoji?: true
+  animatedEmojiUrl?: true
+  color?: true
   createdAt?: true
 }
 
@@ -88,7 +93,8 @@ export type EmotionCountAggregateInputType = {
   id?: true
   name?: true
   category?: true
-  emoji?: true
+  animatedEmojiUrl?: true
+  color?: true
   createdAt?: true
   _all?: true
 }
@@ -183,7 +189,8 @@ export type EmotionGroupByOutputType = {
   id: number
   name: string
   category: string | null
-  emoji: string | null
+  animatedEmojiUrl: string
+  color: string
   createdAt: Date
   _count: EmotionCountAggregateOutputType | null
   _avg: EmotionAvgAggregateOutputType | null
@@ -214,7 +221,8 @@ export type EmotionWhereInput = {
   id?: Prisma.IntFilter<"Emotion"> | number
   name?: Prisma.StringFilter<"Emotion"> | string
   category?: Prisma.StringNullableFilter<"Emotion"> | string | null
-  emoji?: Prisma.StringNullableFilter<"Emotion"> | string | null
+  animatedEmojiUrl?: Prisma.StringFilter<"Emotion"> | string
+  color?: Prisma.StringFilter<"Emotion"> | string
   createdAt?: Prisma.DateTimeFilter<"Emotion"> | Date | string
   entries?: Prisma.EntryEmotionListRelationFilter
 }
@@ -223,7 +231,8 @@ export type EmotionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   category?: Prisma.SortOrderInput | Prisma.SortOrder
-  emoji?: Prisma.SortOrderInput | Prisma.SortOrder
+  animatedEmojiUrl?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   entries?: Prisma.EntryEmotionOrderByRelationAggregateInput
 }
@@ -235,7 +244,8 @@ export type EmotionWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.EmotionWhereInput[]
   NOT?: Prisma.EmotionWhereInput | Prisma.EmotionWhereInput[]
   category?: Prisma.StringNullableFilter<"Emotion"> | string | null
-  emoji?: Prisma.StringNullableFilter<"Emotion"> | string | null
+  animatedEmojiUrl?: Prisma.StringFilter<"Emotion"> | string
+  color?: Prisma.StringFilter<"Emotion"> | string
   createdAt?: Prisma.DateTimeFilter<"Emotion"> | Date | string
   entries?: Prisma.EntryEmotionListRelationFilter
 }, "id" | "name">
@@ -244,7 +254,8 @@ export type EmotionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   category?: Prisma.SortOrderInput | Prisma.SortOrder
-  emoji?: Prisma.SortOrderInput | Prisma.SortOrder
+  animatedEmojiUrl?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.EmotionCountOrderByAggregateInput
   _avg?: Prisma.EmotionAvgOrderByAggregateInput
@@ -260,14 +271,16 @@ export type EmotionScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"Emotion"> | number
   name?: Prisma.StringWithAggregatesFilter<"Emotion"> | string
   category?: Prisma.StringNullableWithAggregatesFilter<"Emotion"> | string | null
-  emoji?: Prisma.StringNullableWithAggregatesFilter<"Emotion"> | string | null
+  animatedEmojiUrl?: Prisma.StringWithAggregatesFilter<"Emotion"> | string
+  color?: Prisma.StringWithAggregatesFilter<"Emotion"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Emotion"> | Date | string
 }
 
 export type EmotionCreateInput = {
   name: string
   category?: string | null
-  emoji?: string | null
+  animatedEmojiUrl: string
+  color: string
   createdAt?: Date | string
   entries?: Prisma.EntryEmotionCreateNestedManyWithoutEmotionInput
 }
@@ -276,7 +289,8 @@ export type EmotionUncheckedCreateInput = {
   id?: number
   name: string
   category?: string | null
-  emoji?: string | null
+  animatedEmojiUrl: string
+  color: string
   createdAt?: Date | string
   entries?: Prisma.EntryEmotionUncheckedCreateNestedManyWithoutEmotionInput
 }
@@ -284,7 +298,8 @@ export type EmotionUncheckedCreateInput = {
 export type EmotionUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  animatedEmojiUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entries?: Prisma.EntryEmotionUpdateManyWithoutEmotionNestedInput
 }
@@ -293,7 +308,8 @@ export type EmotionUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  animatedEmojiUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entries?: Prisma.EntryEmotionUncheckedUpdateManyWithoutEmotionNestedInput
 }
@@ -302,14 +318,16 @@ export type EmotionCreateManyInput = {
   id?: number
   name: string
   category?: string | null
-  emoji?: string | null
+  animatedEmojiUrl: string
+  color: string
   createdAt?: Date | string
 }
 
 export type EmotionUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  animatedEmojiUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -317,7 +335,8 @@ export type EmotionUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  animatedEmojiUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -325,7 +344,8 @@ export type EmotionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  emoji?: Prisma.SortOrder
+  animatedEmojiUrl?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -337,7 +357,8 @@ export type EmotionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  emoji?: Prisma.SortOrder
+  animatedEmojiUrl?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -345,7 +366,8 @@ export type EmotionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  emoji?: Prisma.SortOrder
+  animatedEmojiUrl?: Prisma.SortOrder
+  color?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -375,7 +397,8 @@ export type EmotionUpdateOneRequiredWithoutEntriesNestedInput = {
 export type EmotionCreateWithoutEntriesInput = {
   name: string
   category?: string | null
-  emoji?: string | null
+  animatedEmojiUrl: string
+  color: string
   createdAt?: Date | string
 }
 
@@ -383,7 +406,8 @@ export type EmotionUncheckedCreateWithoutEntriesInput = {
   id?: number
   name: string
   category?: string | null
-  emoji?: string | null
+  animatedEmojiUrl: string
+  color: string
   createdAt?: Date | string
 }
 
@@ -406,7 +430,8 @@ export type EmotionUpdateToOneWithWhereWithoutEntriesInput = {
 export type EmotionUpdateWithoutEntriesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  animatedEmojiUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -414,7 +439,8 @@ export type EmotionUncheckedUpdateWithoutEntriesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  animatedEmojiUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -453,7 +479,8 @@ export type EmotionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   name?: boolean
   category?: boolean
-  emoji?: boolean
+  animatedEmojiUrl?: boolean
+  color?: boolean
   createdAt?: boolean
   entries?: boolean | Prisma.Emotion$entriesArgs<ExtArgs>
   _count?: boolean | Prisma.EmotionCountOutputTypeDefaultArgs<ExtArgs>
@@ -463,7 +490,8 @@ export type EmotionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   category?: boolean
-  emoji?: boolean
+  animatedEmojiUrl?: boolean
+  color?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["emotion"]>
 
@@ -471,7 +499,8 @@ export type EmotionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   category?: boolean
-  emoji?: boolean
+  animatedEmojiUrl?: boolean
+  color?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["emotion"]>
 
@@ -479,11 +508,12 @@ export type EmotionSelectScalar = {
   id?: boolean
   name?: boolean
   category?: boolean
-  emoji?: boolean
+  animatedEmojiUrl?: boolean
+  color?: boolean
   createdAt?: boolean
 }
 
-export type EmotionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "emoji" | "createdAt", ExtArgs["result"]["emotion"]>
+export type EmotionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "animatedEmojiUrl" | "color" | "createdAt", ExtArgs["result"]["emotion"]>
 export type EmotionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   entries?: boolean | Prisma.Emotion$entriesArgs<ExtArgs>
   _count?: boolean | Prisma.EmotionCountOutputTypeDefaultArgs<ExtArgs>
@@ -500,7 +530,8 @@ export type $EmotionPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: number
     name: string
     category: string | null
-    emoji: string | null
+    animatedEmojiUrl: string
+    color: string
     createdAt: Date
   }, ExtArgs["result"]["emotion"]>
   composites: {}
@@ -929,7 +960,8 @@ export interface EmotionFieldRefs {
   readonly id: Prisma.FieldRef<"Emotion", 'Int'>
   readonly name: Prisma.FieldRef<"Emotion", 'String'>
   readonly category: Prisma.FieldRef<"Emotion", 'String'>
-  readonly emoji: Prisma.FieldRef<"Emotion", 'String'>
+  readonly animatedEmojiUrl: Prisma.FieldRef<"Emotion", 'String'>
+  readonly color: Prisma.FieldRef<"Emotion", 'String'>
   readonly createdAt: Prisma.FieldRef<"Emotion", 'DateTime'>
 }
     

@@ -7,38 +7,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class EmotionsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createEmotionDto: CreateEmotionDto) {
-    const name = createEmotionDto.name.toLowerCase();
-    const existingEmotion = await this.prisma.emotion.findUnique({
-      where: {
-        name: name,
-      },
-    });
-
-    if (existingEmotion) {
-      throw new ConflictException('Emotion already exists');
-    }
-
-    return this.prisma.emotion.create({
-      data: {
-        ...createEmotionDto,
-      },
-      select: {
-        id: true,
-        emoji: true,
-        name: true,
-        category: true,
-      },
-    });
-  }
-
   findAll() {
     return this.prisma.emotion.findMany({
       select: {
-        emoji: true,
-        name: true,
         id: true,
+        animatedEmojiUrl: true,
+        name: true,
         category: true,
+        color: true,
       },
     });
   }
@@ -50,7 +26,10 @@ export class EmotionsService {
       },
       select: {
         id: true,
-        emoji: true,
+        animatedEmojiUrl: true,
+        name: true,
+        category: true,
+        color: true,
       },
     });
   }

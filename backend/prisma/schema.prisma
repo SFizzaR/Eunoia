@@ -14,18 +14,16 @@ datasource db {
 }
 
 model User {
-  id Int @default(autoincrement()) @id 
-  email String @unique
-  firstname String 
-  lastname String
-  password String
-  resetToken String? 
-  resetTokenExpiry DateTime?
+  id              Int @default(autoincrement()) @id 
+  email           String @unique
+  firstname       String 
+  lastname        String
+  password        String
   profileImageUrl String?
-  coverImageUrl String?
-  entries Entry[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  coverImageUrl   String?
+  entries         Entry[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
   @@map("users")
 
 }
@@ -49,13 +47,13 @@ model Entry {
 }
 
 model Emotion {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  category    String?
-  emoji       String?
-  createdAt   DateTime @default(now())
-
-  entries     EntryEmotion[]
+  id                Int      @id @default(autoincrement())
+  name              String   @unique
+  category          String?
+  animatedEmojiUrl  String
+  color             String
+  createdAt         DateTime @default(now())
+  entries           EntryEmotion[]
   @@map("emotions")
 }
 
@@ -63,13 +61,10 @@ model EntryEmotion {
   id            Int      @id @default(autoincrement())
   entryId       Int
   emotionId     Int
-
   userSelected  Boolean  @default(false)
   aiDetected    Boolean  @default(false)
   confidence    Float?
-
   createdAt     DateTime @default(now())
-
   entry         Entry   @relation(fields: [entryId], references: [id], onDelete: Cascade)
   emotion       Emotion @relation(fields: [emotionId], references: [id], onDelete: Cascade)
 
@@ -87,7 +82,6 @@ model EntryReflection {
   advice      String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
   entry       Entry @relation(fields: [entryId], references: [id], onDelete: Cascade)
   @@map("entry_reflections")
 
@@ -101,8 +95,7 @@ model Attachment {
   fileType  String
   fileSize  Int?
   createdAt DateTime @default(now())
-
-  entry Entry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  entry     Entry @relation(fields: [entryId], references: [id], onDelete: Cascade)
   @@unique([entryId, fileName]) // ← Prevents duplicates
 
   @@map("attachments")

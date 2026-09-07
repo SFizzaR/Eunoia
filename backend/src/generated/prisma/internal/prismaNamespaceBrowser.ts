@@ -81,8 +81,6 @@ export const UserScalarFieldEnum = {
   firstname: 'firstname',
   lastname: 'lastname',
   password: 'password',
-  resetToken: 'resetToken',
-  resetTokenExpiry: 'resetTokenExpiry',
   profileImageUrl: 'profileImageUrl',
   coverImageUrl: 'coverImageUrl',
   createdAt: 'createdAt',
@@ -108,7 +106,8 @@ export const EmotionScalarFieldEnum = {
   id: 'id',
   name: 'name',
   category: 'category',
-  emoji: 'emoji',
+  animatedEmojiUrl: 'animatedEmojiUrl',
+  color: 'color',
   createdAt: 'createdAt'
 } as const
 

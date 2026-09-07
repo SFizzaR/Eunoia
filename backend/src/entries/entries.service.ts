@@ -76,7 +76,7 @@ export class EntriesService {
                 select: {
                   id: true,
                   name: true,
-                  emoji: true,
+                  animatedEmojiUrl: true,
                   category: true,
                 },
               },
@@ -125,7 +125,7 @@ export class EntriesService {
                 select: {
                   id: true,
                   name: true,
-                  emoji: true,
+                  animatedEmojiUrl: true,
                   category: true,
                 },
               },
@@ -145,7 +145,7 @@ export class EntriesService {
         select: {
           id: true,
           name: true,
-          emoji: true,
+          animatedEmojiUrl: true,
           category: true,
         },
       });
@@ -183,7 +183,7 @@ export class EntriesService {
               select: {
                 id: true,
                 name: true,
-                emoji: true,
+                animatedEmojiUrl: true,
                 category: true,
               },
             },
@@ -224,7 +224,7 @@ export class EntriesService {
               select: {
                 id: true,
                 name: true,
-                emoji: true,
+                animatedEmojiUrl: true,
                 category: true,
               },
             },
@@ -351,7 +351,8 @@ export class EntriesService {
       select: {
         id: true,
         name: true,
-        emoji: true,
+        animatedEmojiUrl: true,
+        color: true,
       },
     });
 
@@ -367,7 +368,8 @@ export class EntriesService {
       },
     });
 
-    // For each emotion, count published entries belonging to this user
+    // ✅ For each emotion, count ALL emotion records (both user-selected AND AI-detected)
+    // that are associated with published entries
     const emotionCounts = await Promise.all(
       emotions.map(async (emotion) => {
         const count = await this.prisma.entryEmotion.count({
@@ -377,14 +379,16 @@ export class EntriesService {
               userId: userId,
               isDraft: false, // ✅ Only count published entries
             },
+            // ✅ Count both user-selected AND AI-detected emotions
+            OR: [{ userSelected: true }, { aiDetected: true }],
           },
         });
-
         return {
           emotionId: emotion.id,
           emotionName: emotion.name,
-          emoji: emotion.emoji,
+          emoji: emotion.animatedEmojiUrl,
           entryCount: count,
+          color: emotion.color,
         };
       }),
     );
@@ -398,6 +402,7 @@ export class EntriesService {
       ),
     };
   }
+
   async remove(id: number, userId: number) {
     const data = await this.prisma.entry.findUnique({
       where: {
@@ -432,7 +437,7 @@ export class EntriesService {
         },
       });
 
-      await tx.entryReflection.delete({
+      await tx.entryReflection.deleteMany({
         where: {
           entryId: id,
         },
