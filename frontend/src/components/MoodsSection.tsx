@@ -1,7 +1,7 @@
 import styles from "../app/page.module.css";
 import Mood from "./mood";
 import { MoodData } from "@/types/moods";
-import { fetchEmotions } from "@/hooks/useEmotions";
+import { fetchEmotions } from "../../hooks/useEmotions";
 import { useState, useEffect } from "react";
 export function MoodsSection() {
   const [moods, setMoods] = useState<MoodData[]>([]);

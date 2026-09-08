@@ -7,7 +7,7 @@ import styles from "./journal.module.css";
 import { AttachmentList } from "../components/Attachmentlist";
 import { useTokenExpiration } from "../../../hooks/useTokenExpiration";
 import { logout } from "../../../lib/auth";
-import { fetchEmotions } from "@/hooks/useEmotions";
+import { fetchEmotions } from "../../../hooks/useEmotions";
 import { Attachment } from "@/types/attachment";
 import { MoodEmoji } from "@/components/MoodEmoji";
 import { Loader } from "lucide-react";
@@ -44,20 +44,18 @@ export default function Journal() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [token, setToken] = useState<string | null>(null);
   const [detectedMoods, setDetectedMoods] = useState<string[]>([]);
-  const [previousContentHash, setPreviousContentHash] = useState<string | null>(
-    null,
-  );
   const [generatedReflection, setGeneratedReflection] = useState<{
     summary: string;
     advice: string | null;
   } | null>(null);
   const [reflectionLoading, setReflectionLoading] = useState(false);
+
   useEffect(() => {
     // Only runs on client-side
     setToken(localStorage.getItem("token"));
   }, []);
 
-  // ✅ Fetch existing entry if entryId is provided
+  // Fetch existing entry if entryId is provided
   useEffect(() => {
     const fetchExistingEntry = async () => {
       if (!entryId || !token) return;
@@ -101,7 +99,7 @@ export default function Journal() {
             .filter(Boolean);
           setSelectedMoods(userSelectedMoods);
 
-          // ✅ NEW: Also load AI-detected moods
+          // Load AI-detected moods
           const aiDetectedMoods = data.emotions
             .filter((e: any) => e.aiDetected) // ← Only AI-detected
             .map((e: any) => e.emotion?.name || "")
@@ -113,7 +111,7 @@ export default function Journal() {
         // Fetch attachments for this entry
         await fetchAttachments(data.id);
 
-        // ✅ Fetch existing reflection if it exists
+        // Fetch existing reflection if it exists
         try {
           const reflectionResponse = await fetch(
             `http://localhost:3000/entry-reflections/${data.id}`,
@@ -145,14 +143,50 @@ export default function Journal() {
     fetchExistingEntry();
   }, [entryId, token]);
 
-  // ✅ Toggle mood selection (add/remove)
+  const buildEmotionsArray = () => {
+    const emotionsArray: Array<{
+      emotionId: string;
+      userSelected: boolean;
+      aiDetected: boolean;
+      confidence?: number;
+    }> = [];
+
+    // Add user-selected emotions
+    selectedMoods.forEach((moodName) => {
+      const mood = moods.find((m) => m.name === moodName);
+      if (mood) {
+        emotionsArray.push({
+          emotionId: mood.id,
+          userSelected: true,
+          aiDetected: false,
+        });
+      }
+    });
+
+    // Add AI-detected emotions
+    detectedMoods.forEach((moodName) => {
+      const mood = moods.find((m) => m.name === moodName);
+      if (mood) {
+        emotionsArray.push({
+          emotionId: mood.id,
+          userSelected: false,
+          aiDetected: true,
+          confidence: 0.8,
+        });
+      }
+    });
+
+    return emotionsArray;
+  };
+
+  // Toggle mood selection (add/remove)
   const toggleMood = (name: string) => {
     setSelectedMoods((prev) =>
       prev.includes(name) ? prev.filter((m) => m !== name) : [...prev, name],
     );
   };
 
-  // ✅ Fetch attachments for current entry
+  // Fetch attachments for current entry
   const fetchAttachments = async (id: number | string) => {
     try {
       setLoadingAttachments(true);
@@ -186,7 +220,7 @@ export default function Journal() {
     }
   };
 
-  // ✅ Handle file upload
+  // Handle file upload
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
 
@@ -250,7 +284,7 @@ export default function Journal() {
     }
   };
 
-  // ✅ Handle attachment deletion
+  // Handle attachment deletion
   const handleDeleteAttachment = (attachmentId: number) => {
     setAttachments((prev) => prev.filter((a) => a.id !== attachmentId));
   };
@@ -313,7 +347,7 @@ export default function Journal() {
     }
   };
 
-  // ✅ Save entry as draft
+  // Save entry as draft
   const saveDraft = async () => {
     if (!thoughts.trim()) {
       setSaveError("Please write something before saving");
@@ -329,6 +363,10 @@ export default function Journal() {
       const url = draftEntryId
         ? `http://localhost:3000/entries/${draftEntryId}`
         : "http://localhost:3000/entries";
+
+      // Build unified emotions array
+      const emotionsArray = buildEmotionsArray();
+
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -338,11 +376,10 @@ export default function Journal() {
         body: JSON.stringify({
           content: thoughts,
           IsDraft: true,
-          emotionids: selectedMoods
-            .map((name) => moods.find((m) => m.name === name)?.id)
-            .filter(Boolean),
+          emotions: emotionsArray, // Send unified emotions array
         }),
       });
+
       if (response.status === 401) {
         logout();
         return;
@@ -369,7 +406,7 @@ export default function Journal() {
     }
   };
 
-  // ✅ Publish entry
+  // Publish entry
   const publishEntry = async () => {
     if (!thoughts.trim()) {
       setSaveError("Please write something before publishing");
@@ -381,24 +418,58 @@ export default function Journal() {
       setSaving(true);
       setSaveError(null);
       setSaveSuccess(false);
-      const method = draftEntryId ? "PATCH" : "POST";
-      const url = draftEntryId
-        ? `http://localhost:3000/entries/${draftEntryId}`
-        : "http://localhost:3000/entries";
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+
+      // ✅ If entry doesn't exist yet, create it as published
+      if (!draftEntryId) {
+        const emotionsArray = buildEmotionsArray();
+
+        const createResponse = await fetch("http://localhost:3000/entries", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content: thoughts,
+            IsDraft: false, // ✅ Create as published directly
+            emotions: emotionsArray, // ✅ Include all emotions
+          }),
+        });
+
+        if (createResponse.status === 401) {
+          logout();
+          return;
+        }
+
+        if (!createResponse.ok) {
+          throw new Error("Failed to publish entry");
+        }
+
+        const data = await createResponse.json();
+        setDraftEntryId(data.id);
+        setIsPublished(true);
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+        return;
+      }
+
+      // ✅ If entry already exists, publish WITHOUT sending emotions
+      // This preserves AI emotions that were added before publish
+      const response = await fetch(
+        `http://localhost:3000/entries/${draftEntryId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content: thoughts,
+            IsDraft: false,
+            // ✅ Don't send emotions - preserve all existing emotions (user + AI)
+          }),
         },
-        body: JSON.stringify({
-          content: thoughts,
-          IsDraft: false,
-          emotionids: selectedMoods
-            .map((name) => moods.find((m) => m.name === name)?.id)
-            .filter(Boolean),
-        }),
-      });
+      );
 
       if (response.status === 401) {
         logout();
@@ -408,6 +479,7 @@ export default function Journal() {
       if (!response.ok) {
         throw new Error("Failed to publish entry");
       }
+
       setSaveSuccess(true);
       setIsPublished(true);
 
@@ -421,8 +493,7 @@ export default function Journal() {
       setSaving(false);
     }
   };
-
-  // ✅ Fetch emotions from backend
+  // Fetch emotions from backend
   useEffect(() => {
     const fetchMoods = async () => {
       try {
@@ -561,18 +632,13 @@ export default function Journal() {
       }
 
       const moodData = await moodResponse.json();
-      console.log("🔍 Full moodData:", moodData); // ← ADD THIS
-      console.log("🔍 detectedEmotions:", moodData.detectedEmotions); // ← ADD THIS
 
-      // ✅ Extract detected emotions and store separately
+      // Extract detected emotions and store separately
       const detectedEmotions = moodData.detectedEmotions.map(
         (e: any) => e.emotionName,
       );
-      console.log("🔍 Final detectedEmotions:", detectedEmotions); // ← ADD THIS
 
       setDetectedMoods(detectedEmotions); // ← Store separately!
-
-      console.log("Detected moods:", detectedEmotions);
 
       // 3. Generate reflection with detected moods
       const reflectionResponse = await fetch(

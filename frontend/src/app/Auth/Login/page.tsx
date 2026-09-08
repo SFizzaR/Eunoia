@@ -6,17 +6,7 @@ import styles from "./login.module.css";
 import Image from "next/image";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useAuth } from "@/app/context/AuthContext";
-
-interface FormData {
-  email: string;
-  password: string;
-}
-
-interface FormErrors {
-  email?: string;
-  password?: string;
-  general?: string;
-}
+import { FormData, FormErrors } from "@/types/loginForm";
 
 export default function Login() {
   const { login } = useAuth();

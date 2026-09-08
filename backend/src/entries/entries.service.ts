@@ -13,7 +13,7 @@ export class EntriesService {
 
   async create(createEntryDto: CreateEntryDto, id: number) {
     return this.prisma.$transaction(async (tx) => {
-      const { content, IsDraft, emotionids } = createEntryDto;
+      const { content, IsDraft, emotions } = createEntryDto;
 
       if (!content?.trim()) {
         throw new BadRequestException('Content is missing');
@@ -32,13 +32,15 @@ export class EntriesService {
         },
       });
 
-      if (emotionids?.length) {
-        for (const id of emotionids) {
+      if (emotions?.length) {
+        for (const emotion of emotions) {
           await tx.entryEmotion.create({
             data: {
-              emotionId: id,
+              emotionId: parseInt(emotion.emotionId),
               entryId: entry.id,
-              userSelected: true,
+              userSelected: emotion.userSelected,
+              confidence: emotion.confidence ?? null,
+              aiDetected: emotion.aiDetected,
             },
           });
         }
@@ -244,9 +246,11 @@ export class EntriesService {
     return entry;
   }
 
+  // ✅ Fixed update method - convert emotionId string to number
+
   async update(id: number, updateEntryDto: CreateEntryDto, userId: number) {
     return this.prisma.$transaction(async (tx) => {
-      const { content, IsDraft, emotionids } = updateEntryDto;
+      const { content, IsDraft, emotions } = updateEntryDto;
 
       if (!content?.trim()) {
         throw new BadRequestException('Content is missing');
@@ -271,7 +275,7 @@ export class EntriesService {
         throw new ForbiddenException('Not authorized to update this entry');
       }
 
-      // Update the entry
+      // Update the entry content and draft status
       const updated = await tx.entry.update({
         where: {
           id,
@@ -288,36 +292,39 @@ export class EntriesService {
         },
       });
 
-      // Only modify emotions if emotionids was actually provided
-      if (emotionids !== undefined) {
-        // Get current emotions for this entry
-        const existingEmotions = await tx.entryEmotion.findMany({
+      // Only modify emotions if emotions array is provided
+      if (emotions !== undefined) {
+        // Get ONLY user-selected emotions (NOT AI-detected)
+        const existingUserEmotions = await tx.entryEmotion.findMany({
           where: {
             entryId: id,
+            userSelected: true,
           },
           select: {
             emotionId: true,
           },
         });
 
-        const existingIds = existingEmotions.map(
-          (emotion) => emotion.emotionId,
-        );
+        const existingIds = existingUserEmotions.map((e) => e.emotionId);
 
-        // Remove duplicates from the incoming array
-        const newEmotionIds = [...new Set(emotionids)];
+        // Convert string emotionIds to numbers for comparison
+        const newEmotionIds = emotions
+          .filter((e) => e.userSelected)
+          .map((e) => parseInt(e.emotionId));
 
-        // Emotions that were removed
+        // Emotions to delete (user-selected ones being removed)
         const emotionsToDelete = existingIds.filter(
-          (emotionId) => !newEmotionIds.includes(emotionId),
+          (id) => !newEmotionIds.includes(id),
         );
 
-        // Emotions that are newly added
-        const emotionsToAdd = newEmotionIds.filter(
-          (emotionId) => !existingIds.includes(emotionId),
+        // Emotions to add (new user-selected emotions)
+        const emotionsToAdd = emotions.filter(
+          (e) =>
+            e.userSelected && // Only add user-selected
+            !existingIds.includes(parseInt(e.emotionId)),
         );
 
-        // Delete only removed emotions
+        // Delete only user-selected emotions
         if (emotionsToDelete.length > 0) {
           await tx.entryEmotion.deleteMany({
             where: {
@@ -325,20 +332,32 @@ export class EntriesService {
               emotionId: {
                 in: emotionsToDelete,
               },
+              userSelected: true,
             },
           });
+          console.log(
+            `🗑️ Deleted ${emotionsToDelete.length} user-selected emotions`,
+          );
         }
 
-        // Create only new emotions
+        // Create new emotions (both user-selected and AI-detected from emotions array)
         if (emotionsToAdd.length > 0) {
           await tx.entryEmotion.createMany({
-            data: emotionsToAdd.map((emotionId) => ({
+            data: emotionsToAdd.map((emotion) => ({
               entryId: id,
-              emotionId,
-              userSelected: true,
+              emotionId: parseInt(emotion.emotionId), // ✅ String → Number
+              userSelected: emotion.userSelected,
+              aiDetected: emotion.aiDetected,
+              confidence: emotion.confidence ?? null,
             })),
           });
+          console.log(`➕ Added ${emotionsToAdd.length} new emotions`);
         }
+
+        console.log(`✅ Emotions updated. AI-detected emotions preserved.`);
+      } else {
+        // emotions is undefined - DO NOT TOUCH EMOTIONS AT ALL
+        console.log(`✅ Publishing entry. All emotions preserved.`);
       }
 
       return updated;
@@ -386,7 +405,7 @@ export class EntriesService {
         return {
           emotionId: emotion.id,
           emotionName: emotion.name,
-          emoji: emotion.animatedEmojiUrl,
+          animatedEmojiUrl: emotion.animatedEmojiUrl,
           entryCount: count,
           color: emotion.color,
         };
