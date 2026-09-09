@@ -45,7 +45,7 @@ export default function Journal() {
   const [token, setToken] = useState<string | null>(null);
   const [detectedMoods, setDetectedMoods] = useState<string[]>([]);
   const [generatedReflection, setGeneratedReflection] = useState<{
-    summary: string;
+    reflection: string;
     advice: string | null;
   } | null>(null);
   const [reflectionLoading, setReflectionLoading] = useState(false);
@@ -662,6 +662,7 @@ export default function Journal() {
       }
 
       const reflectionData = await reflectionResponse.json();
+      console.log("Reflection data:", reflectionData);
       setGeneratedReflection(reflectionData.reflection);
       setShowReflection(true);
     } catch (error) {
@@ -1060,14 +1061,14 @@ export default function Journal() {
               </div>
             )}
 
-            {/* Show SUMMARY */}
-            {generatedReflection?.summary && !reflectionLoading && (
+            {/* Show Reflection */}
+            {generatedReflection?.reflection && !reflectionLoading && (
               <div style={{ marginTop: "1.5rem" }}>
                 <p className={styles.reflectionText}>
-                  <strong>📝 Summary:</strong>
+                  <strong>📝 Reflection:</strong>
                 </p>
                 <p className={styles.reflectionText}>
-                  {generatedReflection.summary}
+                  {generatedReflection.reflection}
                 </p>
               </div>
             )}

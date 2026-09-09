@@ -39,7 +39,7 @@ export type EntryReflectionSumAggregateOutputType = {
 export type EntryReflectionMinAggregateOutputType = {
   id: number | null
   entryId: number | null
-  summary: string | null
+  reflection: string | null
   advice: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -48,7 +48,7 @@ export type EntryReflectionMinAggregateOutputType = {
 export type EntryReflectionMaxAggregateOutputType = {
   id: number | null
   entryId: number | null
-  summary: string | null
+  reflection: string | null
   advice: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -57,7 +57,7 @@ export type EntryReflectionMaxAggregateOutputType = {
 export type EntryReflectionCountAggregateOutputType = {
   id: number
   entryId: number
-  summary: number
+  reflection: number
   advice: number
   createdAt: number
   updatedAt: number
@@ -78,7 +78,7 @@ export type EntryReflectionSumAggregateInputType = {
 export type EntryReflectionMinAggregateInputType = {
   id?: true
   entryId?: true
-  summary?: true
+  reflection?: true
   advice?: true
   createdAt?: true
   updatedAt?: true
@@ -87,7 +87,7 @@ export type EntryReflectionMinAggregateInputType = {
 export type EntryReflectionMaxAggregateInputType = {
   id?: true
   entryId?: true
-  summary?: true
+  reflection?: true
   advice?: true
   createdAt?: true
   updatedAt?: true
@@ -96,7 +96,7 @@ export type EntryReflectionMaxAggregateInputType = {
 export type EntryReflectionCountAggregateInputType = {
   id?: true
   entryId?: true
-  summary?: true
+  reflection?: true
   advice?: true
   createdAt?: true
   updatedAt?: true
@@ -192,7 +192,7 @@ export type EntryReflectionGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 export type EntryReflectionGroupByOutputType = {
   id: number
   entryId: number
-  summary: string
+  reflection: string
   advice: string | null
   createdAt: Date
   updatedAt: Date
@@ -224,7 +224,7 @@ export type EntryReflectionWhereInput = {
   NOT?: Prisma.EntryReflectionWhereInput | Prisma.EntryReflectionWhereInput[]
   id?: Prisma.IntFilter<"EntryReflection"> | number
   entryId?: Prisma.IntFilter<"EntryReflection"> | number
-  summary?: Prisma.StringFilter<"EntryReflection"> | string
+  reflection?: Prisma.StringFilter<"EntryReflection"> | string
   advice?: Prisma.StringNullableFilter<"EntryReflection"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EntryReflection"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EntryReflection"> | Date | string
@@ -234,7 +234,7 @@ export type EntryReflectionWhereInput = {
 export type EntryReflectionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   entryId?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
+  reflection?: Prisma.SortOrder
   advice?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -247,7 +247,7 @@ export type EntryReflectionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EntryReflectionWhereInput | Prisma.EntryReflectionWhereInput[]
   OR?: Prisma.EntryReflectionWhereInput[]
   NOT?: Prisma.EntryReflectionWhereInput | Prisma.EntryReflectionWhereInput[]
-  summary?: Prisma.StringFilter<"EntryReflection"> | string
+  reflection?: Prisma.StringFilter<"EntryReflection"> | string
   advice?: Prisma.StringNullableFilter<"EntryReflection"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EntryReflection"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EntryReflection"> | Date | string
@@ -257,7 +257,7 @@ export type EntryReflectionWhereUniqueInput = Prisma.AtLeast<{
 export type EntryReflectionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   entryId?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
+  reflection?: Prisma.SortOrder
   advice?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -274,14 +274,14 @@ export type EntryReflectionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EntryReflectionScalarWhereWithAggregatesInput | Prisma.EntryReflectionScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"EntryReflection"> | number
   entryId?: Prisma.IntWithAggregatesFilter<"EntryReflection"> | number
-  summary?: Prisma.StringWithAggregatesFilter<"EntryReflection"> | string
+  reflection?: Prisma.StringWithAggregatesFilter<"EntryReflection"> | string
   advice?: Prisma.StringNullableWithAggregatesFilter<"EntryReflection"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EntryReflection"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EntryReflection"> | Date | string
 }
 
 export type EntryReflectionCreateInput = {
-  summary: string
+  reflection: string
   advice?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -291,14 +291,14 @@ export type EntryReflectionCreateInput = {
 export type EntryReflectionUncheckedCreateInput = {
   id?: number
   entryId: number
-  summary: string
+  reflection: string
   advice?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type EntryReflectionUpdateInput = {
-  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  reflection?: Prisma.StringFieldUpdateOperationsInput | string
   advice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -308,7 +308,7 @@ export type EntryReflectionUpdateInput = {
 export type EntryReflectionUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   entryId?: Prisma.IntFieldUpdateOperationsInput | number
-  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  reflection?: Prisma.StringFieldUpdateOperationsInput | string
   advice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -317,14 +317,14 @@ export type EntryReflectionUncheckedUpdateInput = {
 export type EntryReflectionCreateManyInput = {
   id?: number
   entryId: number
-  summary: string
+  reflection: string
   advice?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type EntryReflectionUpdateManyMutationInput = {
-  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  reflection?: Prisma.StringFieldUpdateOperationsInput | string
   advice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -333,7 +333,7 @@ export type EntryReflectionUpdateManyMutationInput = {
 export type EntryReflectionUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   entryId?: Prisma.IntFieldUpdateOperationsInput | number
-  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  reflection?: Prisma.StringFieldUpdateOperationsInput | string
   advice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -347,7 +347,7 @@ export type EntryReflectionNullableScalarRelationFilter = {
 export type EntryReflectionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   entryId?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
+  reflection?: Prisma.SortOrder
   advice?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -361,7 +361,7 @@ export type EntryReflectionAvgOrderByAggregateInput = {
 export type EntryReflectionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   entryId?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
+  reflection?: Prisma.SortOrder
   advice?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -370,7 +370,7 @@ export type EntryReflectionMaxOrderByAggregateInput = {
 export type EntryReflectionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   entryId?: Prisma.SortOrder
-  summary?: Prisma.SortOrder
+  reflection?: Prisma.SortOrder
   advice?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -414,7 +414,7 @@ export type EntryReflectionUncheckedUpdateOneWithoutEntryNestedInput = {
 }
 
 export type EntryReflectionCreateWithoutEntryInput = {
-  summary: string
+  reflection: string
   advice?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -422,7 +422,7 @@ export type EntryReflectionCreateWithoutEntryInput = {
 
 export type EntryReflectionUncheckedCreateWithoutEntryInput = {
   id?: number
-  summary: string
+  reflection: string
   advice?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -445,7 +445,7 @@ export type EntryReflectionUpdateToOneWithWhereWithoutEntryInput = {
 }
 
 export type EntryReflectionUpdateWithoutEntryInput = {
-  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  reflection?: Prisma.StringFieldUpdateOperationsInput | string
   advice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -453,7 +453,7 @@ export type EntryReflectionUpdateWithoutEntryInput = {
 
 export type EntryReflectionUncheckedUpdateWithoutEntryInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  reflection?: Prisma.StringFieldUpdateOperationsInput | string
   advice?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -464,7 +464,7 @@ export type EntryReflectionUncheckedUpdateWithoutEntryInput = {
 export type EntryReflectionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   entryId?: boolean
-  summary?: boolean
+  reflection?: boolean
   advice?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -474,7 +474,7 @@ export type EntryReflectionSelect<ExtArgs extends runtime.Types.Extensions.Inter
 export type EntryReflectionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   entryId?: boolean
-  summary?: boolean
+  reflection?: boolean
   advice?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -484,7 +484,7 @@ export type EntryReflectionSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
 export type EntryReflectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   entryId?: boolean
-  summary?: boolean
+  reflection?: boolean
   advice?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -494,13 +494,13 @@ export type EntryReflectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
 export type EntryReflectionSelectScalar = {
   id?: boolean
   entryId?: boolean
-  summary?: boolean
+  reflection?: boolean
   advice?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EntryReflectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "entryId" | "summary" | "advice" | "createdAt" | "updatedAt", ExtArgs["result"]["entryReflection"]>
+export type EntryReflectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "entryId" | "reflection" | "advice" | "createdAt" | "updatedAt", ExtArgs["result"]["entryReflection"]>
 export type EntryReflectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   entry?: boolean | Prisma.EntryDefaultArgs<ExtArgs>
 }
@@ -519,7 +519,7 @@ export type $EntryReflectionPayload<ExtArgs extends runtime.Types.Extensions.Int
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     entryId: number
-    summary: string
+    reflection: string
     advice: string | null
     createdAt: Date
     updatedAt: Date
@@ -949,7 +949,7 @@ export interface Prisma__EntryReflectionClient<T, Null = never, ExtArgs extends 
 export interface EntryReflectionFieldRefs {
   readonly id: Prisma.FieldRef<"EntryReflection", 'Int'>
   readonly entryId: Prisma.FieldRef<"EntryReflection", 'Int'>
-  readonly summary: Prisma.FieldRef<"EntryReflection", 'String'>
+  readonly reflection: Prisma.FieldRef<"EntryReflection", 'String'>
   readonly advice: Prisma.FieldRef<"EntryReflection", 'String'>
   readonly createdAt: Prisma.FieldRef<"EntryReflection", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"EntryReflection", 'DateTime'>

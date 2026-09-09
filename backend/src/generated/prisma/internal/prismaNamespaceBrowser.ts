@@ -130,7 +130,7 @@ export type EntryEmotionScalarFieldEnum = (typeof EntryEmotionScalarFieldEnum)[k
 export const EntryReflectionScalarFieldEnum = {
   id: 'id',
   entryId: 'entryId',
-  summary: 'summary',
+  reflection: 'reflection',
   advice: 'advice',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

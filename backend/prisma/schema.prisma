@@ -78,7 +78,7 @@ model EntryEmotion {
 model EntryReflection {
   id          Int      @id @default(autoincrement())
   entryId     Int      @unique
-  summary     String
+  reflection  String
   advice      String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

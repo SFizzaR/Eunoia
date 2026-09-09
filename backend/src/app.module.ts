@@ -12,6 +12,7 @@ import { EmotionsModule } from './emotions/emotions.module';
 import { QuotesModule } from './quotes/quote.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 import { EntryReflectionsModule } from './entry_reflections/entry_reflections.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -26,6 +27,10 @@ import { EntryReflectionsModule } from './entry_reflections/entry_reflections.mo
     QuotesModule,
     AttachmentsModule,
     EntryReflectionsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env', // Make sure this points to your .env file
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -8,20 +8,27 @@ import { CreateEntryEmotionDto } from './dto/create-entry_emotion.dto';
 import { DetectEntryEmotionDto } from './dto/detect-entry_emotion.dto';
 import { EmotionsService } from 'src/emotions/emotions.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { EntriesService } from 'src/entries/entries.service';
 import { EntryEmotion } from './entities/entry_emotion.entity';
 import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EntryEmotionsService {
+  private hfApiToken: string | undefined; // ✅ Allow undefined
+  private hfApiUrl =
+    'https://router.huggingface.co/hf-inference/models/distilbert/distilbert-base-uncased-finetuned-sst-2-english';
   constructor(
     private prisma: PrismaService,
     private emotions: EmotionsService,
-    private entries: EntriesService,
-  ) {}
+    private config: ConfigService,
+  ) {
+    // ✅ Initialize token in constructor body
+    this.hfApiToken = this.config.get<string>('HF_TOKEN');
 
-  private ollamaUrl = 'http://localhost:11434/api/generate';
-  private model = 'mistral';
+    if (!this.hfApiToken) {
+      console.warn('⚠️ HF_TOKEN not found in .env');
+    }
+  }
 
   async create(
     createEntryEmotionDtos: CreateEntryEmotionDto[],
@@ -163,96 +170,76 @@ export class EntryEmotionsService {
     if (!entry) throw new NotFoundException('Entry not found');
     if (Number(entry.userId) !== Number(userId))
       throw new ForbiddenException('User not authorized');
-    if (!DetectEntryEmotionDto.content?.trim) {
+    if (!DetectEntryEmotionDto.content?.trim()) {
       throw new BadRequestException('Content is required');
     }
 
+    // ✅ Check if token exists
+    if (!this.hfApiToken) {
+      throw new BadRequestException(
+        'Hugging Face API token not configured. Please set HUGGINGFACE_API_TOKEN in .env',
+      );
+    }
+
     try {
-      const availableEmotions = await this.prisma.emotion.findMany({
+      // Call Hugging Face API
+      const response = await axios.post(
+        this.hfApiUrl,
+        { inputs: DetectEntryEmotionDto.content },
+        {
+          headers: {
+            Authorization: `Bearer ${this.hfApiToken}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      const data = response.data;
+
+      let hfResults = data?.[0];
+
+      if (Array.isArray(hfResults)) {
+        hfResults = hfResults[0];
+      }
+
+      if (!hfResults?.label || hfResults?.score == null) {
+        throw new BadRequestException('Invalid response from Hugging Face');
+      }
+
+      const sentimentLabel = hfResults.label.toUpperCase();
+
+      // Map HF sentiment to your category
+      const sentimentToCategoryMap = {
+        POSITIVE: 'positive',
+        NEGATIVE: 'negative',
+        NEUTRAL: 'neutral',
+      };
+
+      const targetCategory = sentimentToCategoryMap[sentimentLabel];
+
+      // Get emotions matching the sentiment category
+      const emotions = await this.prisma.emotion.findMany({
+        where: {
+          category: targetCategory,
+        },
         select: {
           name: true,
         },
       });
 
-      const emotionList = availableEmotions.map((e) => e.name).join(', ');
-
-      const response = await axios.post(this.ollamaUrl, {
-        model: this.model,
-        prompt: `You are an emotion detection AI. Analyze this journal entry and detect emotions.
-
-Journal Entry:
-"${DetectEntryEmotionDto.content}"
-
-IMPORTANT: Return emotions ONLY from this list:
-${emotionList}
-
-Return a JSON array with emotion names and confidence scores (0.0-1.0).
-Max 5 emotions. Do NOT invent emotions not in the list above.
-
-Example: [{"emotion": "anxious", "confidence": 0.92}]
-
-Return ONLY JSON, no extra text:`,
-        stream: false,
-        temperature: 0.3,
-      });
-
-      const emotionText = response.data.response.trim();
-
-      try {
-        const jsonMatch = emotionText.match(/\[\s*{[\s\S]*}\s*\]/);
-        if (!jsonMatch) throw new Error('No JSON array found');
-
-        const parsed = JSON.parse(jsonMatch[0]);
-
-        if (!Array.isArray(parsed)) {
-          throw new BadRequestException('Invalid response format');
-        }
-
-        const validatedEmotions: Array<{
-          emotionName: string;
-          confidence: number;
-        }> = [];
-
-        for (const item of parsed) {
-          if (!item.emotion || typeof item.confidence !== 'number') {
-            continue; // Skip invalid items
-          }
-
-          const emotionName = item.emotion.toLowerCase().trim();
-
-          // ✅ Check if emotion exists in database
-          try {
-            const emotion = await this.emotions.findOne(emotionName);
-
-            // Only include if it exists in DB
-            if (emotion) {
-              validatedEmotions.push({
-                emotionName,
-                confidence: Math.min(
-                  1,
-                  Math.max(0, parseFloat(item.confidence.toFixed(2))),
-                ),
-              });
-            } else {
-              console.warn(
-                `Emotion "${emotionName}" not in database - skipping`,
-              );
-            }
-          } catch (err) {
-            console.warn(`Emotion "${emotionName}" not found in database`);
-            continue;
-          }
-        }
-
-        if (validatedEmotions.length === 0) {
-          throw new BadRequestException('No valid emotions detected in entry');
-        }
-
-        return validatedEmotions.slice(0, 5); // Max 5
-      } catch (parseError) {
-        console.error('Failed to parse Ollama response:', emotionText);
-        throw new BadRequestException('Invalid emotion detection response');
+      if (emotions.length === 0) {
+        throw new BadRequestException('No valid emotions detected in entry');
       }
+
+      const validatedEmotions = emotions.map((emotion) => ({
+        emotionName: emotion.name,
+        confidence: Math.min(
+          1,
+          Math.max(0, parseFloat(hfResults.score.toFixed(2))),
+        ),
+      }));
+
+      return validatedEmotions.slice(0, 5);
     } catch (error) {
       console.error('Error detecting mood:', error);
       throw new BadRequestException('Failed to detect mood');
@@ -277,6 +264,7 @@ Return ONLY JSON, no extra text:`,
     // Pass tx to create
     return await this.create(dtos, userId, tx);
   }
+
   findAll() {
     return `This action returns all entryEmotions`;
   }

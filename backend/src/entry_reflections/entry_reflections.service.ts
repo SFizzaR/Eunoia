@@ -7,14 +7,24 @@ import {
 import { CreateEntryReflectionDto } from './dto/create-entry_reflection.dto';
 import { UpdateEntryReflectionDto } from './dto/update-entry_reflection.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 @Injectable()
 export class EntryReflectionsService {
-  constructor(private prisma: PrismaService) {}
+  private hfApiToken: string | undefined; // ✅ Allow undefined
+  private hfApiUrl = 'https://router.huggingface.co/v1/chat/completions';
+  constructor(
+    private prisma: PrismaService,
+    private config: ConfigService,
+  ) {
+    // Load token from environment
+    this.hfApiToken = this.config.get<string>('HF_TOKEN');
 
-  private ollamaUrl = 'http://localhost:11434/api/generate';
-  private model = 'mistral';
+    if (!this.hfApiToken) {
+      console.warn('⚠️ HF_TOKEN not found in .env');
+    }
+  }
 
   async create(
     createEntryReflectionDto: CreateEntryReflectionDto,
@@ -48,10 +58,15 @@ export class EntryReflectionsService {
       createEntryReflectionDto.emotions?.join(', ') || 'various feelings';
 
     try {
-      // ✅ Call Ollama to generate reflection
-      const response = await axios.post(this.ollamaUrl, {
-        model: this.model,
-        prompt: `You are an empathetic journal assistant.
+      // ✅ Call Hugging Face to generate reflection
+      const response = await axios.post(
+        this.hfApiUrl,
+        {
+          model: 'mistralai/Mistral-7B-Instruct-v0.2:featherless-ai',
+          messages: [
+            {
+              role: 'user',
+              content: `You are an empathetic journal assistant.
 
 Journal Entry:
 "${createEntryReflectionDto.content}"
@@ -60,46 +75,56 @@ Emotions Detected: ${emotionText}
 
 Provide BOTH:
 
-1. SUMMARY (2 sentences): Briefly show you understood their experience
+1. REFLECTION (2 sentences): In second person, reflect on their thoughts and speak directly to them about what you notice
 2. ADVICE (2-3 sentences): Supportive, constructive suggestions
 
 Format exactly as:
-SUMMARY: [your summary here]
+REFLECTION: [your reflection here, speaking to them directly]
 ADVICE: [your advice here]`,
-        stream: false,
-        temperature: 0.7,
-      });
+            },
+          ],
+          max_tokens: 300,
+          temperature: 0.7,
+          top_p: 0.95,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.hfApiToken}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
       // ✅ Parse response correctly
-      const text = response.data.response;
-      const summaryMatch = text.match(/SUMMARY:\s*(.+?)(?=ADVICE:|$)/s);
+      const text = response.data.choices[0].message.content;
+
+      const reflectionMatch = text.match(/REFLECTION:\s*(.+?)(?=ADVICE:|$)/s);
       const adviceMatch = text.match(/ADVICE:\s*(.+?)$/s);
 
-      const summary = summaryMatch?.[1]?.trim() || '';
+      const reflection = reflectionMatch?.[1]?.trim() || '';
       const advice = adviceMatch?.[1]?.trim() || null;
-
-      if (!summary) {
-        throw new BadRequestException('Failed to generate summary');
+      if (!reflection) {
+        throw new BadRequestException('Failed to generate reflection');
       }
 
-      // ✅ Save to database with upsert (update if exists, create if not)
-      const reflection = await this.prisma.entryReflection.upsert({
+      // ✅ Save to database with upsert
+      const reflectionData = await this.prisma.entryReflection.upsert({
         where: {
           entryId: createEntryReflectionDto.entryId,
         },
         update: {
-          summary,
+          reflection,
           advice,
           updatedAt: new Date(),
         },
         create: {
           entryId: createEntryReflectionDto.entryId,
-          summary,
+          reflection,
           advice,
         },
         select: {
           id: true,
-          summary: true,
+          reflection: true,
           advice: true,
           createdAt: true,
           updatedAt: true,
@@ -116,7 +141,6 @@ ADVICE: [your advice here]`,
     }
   }
 
-  // ✅ Implement findOne for getting reflection by entry ID
   async findByEntryId(entryId: number, userId: number) {
     const entry = await this.prisma.entry.findUnique({
       where: { id: entryId },
@@ -134,7 +158,7 @@ ADVICE: [your advice here]`,
     return await this.prisma.entryReflection.findUnique({
       where: { entryId },
       select: {
-        summary: true,
+        reflection: true,
         advice: true,
         createdAt: true,
         updatedAt: true,
@@ -165,7 +189,7 @@ ADVICE: [your advice here]`,
         entryId: entryid,
       },
       select: {
-        summary: true,
+        reflection: true,
         advice: true,
       },
     });
