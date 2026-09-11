@@ -13,7 +13,10 @@ app = FastAPI(
 # CORS - allow NestJS backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001"],  # Your NestJS port
+    allow_origins=[
+        "http://localhost:3001",  # Local dev
+        "https://*.onrender.com",  # All Render subdomains
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
