@@ -11,11 +11,184 @@ import { fetchEmotions } from "../../../hooks/useEmotions";
 import { Attachment } from "@/types/attachment";
 import { MoodEmoji } from "@/components/MoodEmoji";
 import { Loader } from "lucide-react";
+import Lottie from "lottie-react"; // ← Import Lottie
+
 interface Mood {
   id: string;
   name: string;
   animatedEmojiUrl: string;
+  category: "positive" | "neutral" | "negative";
+  color: string;
 }
+const organizeMoodsByCategory = (moods: Mood[]) => {
+  const organized = moods.reduce(
+    (acc, mood) => {
+      if (!acc[mood.category]) {
+        acc[mood.category] = [];
+      }
+      acc[mood.category].push(mood);
+      return acc;
+    },
+    {} as Record<"positive" | "neutral" | "negative", Mood[]>,
+  );
+
+  // Sort each category by name
+  Object.keys(organized).forEach((cat) => {
+    organized[cat as "positive" | "neutral" | "negative"].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+  });
+
+  return organized;
+};
+
+// Component for rendering Lottie animations
+const LottieEmoji = ({
+  animationUrl,
+  size = 40,
+}: {
+  animationUrl: string;
+  size?: number;
+}) => {
+  const [animationData, setAnimationData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnimation = async () => {
+      try {
+        const response = await fetch(animationUrl);
+        const data = await response.json();
+        setAnimationData(data);
+      } catch (error) {
+        console.error("Error loading Lottie animation:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnimation();
+  }, [animationUrl]);
+
+  if (loading) {
+    return <div style={{ width: size, height: size, background: "#f0f0f0" }} />;
+  }
+
+  if (!animationData) {
+    return (
+      <div style={{ width: size, height: size, background: "#ddd" }}>❌</div>
+    );
+  }
+
+  return (
+    <Lottie
+      animationData={animationData}
+      loop
+      style={{ width: size, height: size }}
+    />
+  );
+};
+
+// Component for category sections
+const MoodCategorySection = ({
+  category,
+  moods,
+  selectedMoods,
+  onToggleMood,
+  isLocked,
+}: {
+  category: "positive" | "neutral" | "negative";
+  moods: Mood[];
+  selectedMoods: string[];
+  onToggleMood: (name: string) => void;
+  isLocked: boolean;
+}) => {
+  const categoryLabels = {
+    positive: {
+      label: "😊 Positive Emotions",
+      color: "#52B788",
+    },
+    neutral: {
+      label: "😐 Neutral Emotions",
+      color: "#4361EE",
+    },
+    negative: {
+      label: "😔 Challenging Emotions",
+      color: "#CC0000",
+    },
+  };
+
+  const categoryInfo = categoryLabels[category];
+
+  if (moods.length === 0) return null;
+
+  return (
+    <div style={{ marginBottom: "2rem" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          marginBottom: "1rem",
+        }}
+      >
+        <h3
+          style={{
+            fontSize: "1rem",
+            fontWeight: "600",
+            color: categoryInfo.color,
+            margin: 0,
+          }}
+        >
+          {categoryInfo.label}
+        </h3>
+        <span style={{ fontSize: "0.75rem", color: "#999" }}>
+          ({moods.length})
+        </span>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(90px, 1fr))",
+          gap: "0.75rem",
+          marginBottom: "0.5rem",
+        }}
+      >
+        {moods.map((mood) => (
+          <button
+            key={mood.id}
+            onClick={() => onToggleMood(mood.name)}
+            style={{
+              padding: "0.75rem",
+              borderRadius: "0.5rem",
+              border: selectedMoods.includes(mood.name)
+                ? `2px solid ${mood.color}`
+                : "1px solid #ddd",
+              backgroundColor: selectedMoods.includes(mood.name)
+                ? `${mood.color}20`
+                : "#fff",
+              cursor: isLocked ? "not-allowed" : "pointer",
+              opacity: isLocked ? 0.6 : 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "0.5rem",
+              transition: "all 0.2s ease",
+              fontSize: "0.875rem",
+              fontWeight: selectedMoods.includes(mood.name) ? "600" : "500",
+              color: selectedMoods.includes(mood.name) ? mood.color : "#333",
+            }}
+            disabled={isLocked}
+            title={mood.name}
+          >
+            <LottieEmoji animationUrl={mood.animatedEmojiUrl} size={40} />
+            <span style={{ fontSize: "0.75rem" }}>{mood.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default function Journal() {
   useTokenExpiration();
@@ -549,7 +722,17 @@ export default function Journal() {
       }
 
       const data = await response.json();
-      setGeneratedReflection(data.reflection);
+      console.log("✅ Reflection response:", data);
+
+      // Handle nested structure: data.reflectionData
+      const actualReflectionData = data.reflectionData || data;
+      console.log("💡 Advice from response:", actualReflectionData.advice);
+
+      const reflectionObject = {
+        reflection: actualReflectionData.reflection || "",
+        advice: actualReflectionData.advice || null,
+      };
+      setGeneratedReflection(reflectionObject);
       setShowReflection(true);
     } catch (error) {
       console.error("Error generating reflection:", error);
@@ -562,7 +745,6 @@ export default function Journal() {
       setReflectionLoading(false);
     }
   };
-
   const handleGetReflection = async () => {
     if (!thoughts.trim()) {
       setSaveError("Write something first");
@@ -579,6 +761,7 @@ export default function Journal() {
       setSaveError(null);
 
       // 1. Update entry
+      console.log("📝 Step 1: Updating entry...");
       const updateResponse = await fetch(
         `http://localhost:3000/entries/${draftEntryId}`,
         {
@@ -601,16 +784,11 @@ export default function Journal() {
         throw new Error("Failed to update entry");
       }
 
-      const updatedEntry = await updateResponse.json();
-      console.log("✅ Step 1 Complete:", updatedEntry);
+      console.log("✅ Step 1: Entry updated");
 
       // 2. Detect moods (AI)
       console.log("🤖 Step 2: Detecting moods...");
-      console.log("🤖 Token:", token); // ← Debug token
-      console.log("🤖 Draft Entry ID:", draftEntryId); // ← Debug ID
-      console.log("🤖 Thoughts length:", thoughts.length); // ← Debug content
 
-      // 2. Detect moods (AI)
       const moodResponse = await fetch(
         "http://localhost:3000/entry-emotions/detect-mood",
         {
@@ -625,22 +803,59 @@ export default function Journal() {
           }),
         },
       );
-      console.log("🤖 Got mood response, status:", moodResponse.status);
 
       if (!moodResponse.ok) {
-        throw new Error("Failed to detect mood");
+        const errorData = await moodResponse.json().catch(() => ({}));
+        throw new Error(
+          `Failed to detect mood: ${errorData.message || moodResponse.statusText}`,
+        );
       }
 
       const moodData = await moodResponse.json();
-
-      // Extract detected emotions and store separately
-      const detectedEmotions = moodData.detectedEmotions.map(
-        (e: any) => e.emotionName,
+      console.log("🤖 Raw mood response:", moodData);
+      console.log(
+        "🤖 Response type:",
+        typeof moodData,
+        "Is array:",
+        Array.isArray(moodData),
       );
 
-      setDetectedMoods(detectedEmotions); // ← Store separately!
+      // ✅ FIX: Handle both array and object responses
+      let detectedEmotions: string[] = [];
+
+      if (Array.isArray(moodData)) {
+        // If response is array
+        detectedEmotions = moodData
+          .map((e: any) => e.emotionName || e.emotion || e.name || "")
+          .filter(Boolean);
+      } else if (
+        moodData.detectedEmotions &&
+        Array.isArray(moodData.detectedEmotions)
+      ) {
+        // If response is object with detectedEmotions array
+        detectedEmotions = moodData.detectedEmotions
+          .map((e: any) => e.emotionName || e.emotion || e.name || "")
+          .filter(Boolean);
+      } else if (moodData.emotions && Array.isArray(moodData.emotions)) {
+        // If response is object with emotions array
+        detectedEmotions = moodData.emotions
+          .map((e: any) => e.emotionName || e.emotion || e.name || "")
+          .filter(Boolean);
+      }
+
+      console.log("✅ Extracted emotions:", detectedEmotions);
+      console.log("✅ Emotion count:", detectedEmotions.length);
+
+      if (detectedEmotions.length === 0) {
+        console.warn("⚠️ No emotions extracted from response");
+      }
+
+      setDetectedMoods(detectedEmotions);
+      console.log("✅ Step 2 Complete: Moods detected");
 
       // 3. Generate reflection with detected moods
+      console.log("📝 Step 3: Generating reflection...");
+
       const reflectionResponse = await fetch(
         "http://localhost:3000/entry-reflections",
         {
@@ -652,21 +867,41 @@ export default function Journal() {
           body: JSON.stringify({
             entryId: draftEntryId,
             content: thoughts,
-            emotions: detectedEmotions, // ← Pass detected moods
+            emotions: detectedEmotions,
           }),
         },
       );
 
       if (!reflectionResponse.ok) {
-        throw new Error("Failed to generate reflection");
+        const reflectionError = await reflectionResponse
+          .json()
+          .catch(() => ({}));
+        throw new Error(
+          `Failed to generate reflection: ${reflectionError.message || reflectionResponse.statusText}`,
+        );
       }
 
       const reflectionData = await reflectionResponse.json();
-      console.log("Reflection data:", reflectionData);
-      setGeneratedReflection(reflectionData.reflection);
+      console.log("✅ Reflection data:", reflectionData);
+
+      // Handle nested structure: reflectionData.reflectionData.reflection
+      const actualReflectionData =
+        reflectionData.reflectionData || reflectionData;
+
+      console.log("📋 Reflection:", actualReflectionData.reflection);
+      console.log("💡 Advice:", actualReflectionData.advice);
+
+      const reflectionObject = {
+        reflection: actualReflectionData.reflection || "",
+        advice: actualReflectionData.advice || null,
+      };
+
+      console.log("📦 Setting reflection object:", reflectionObject);
+      setGeneratedReflection(reflectionObject);
       setShowReflection(true);
+      console.log("✅ Step 3 Complete: Reflection generated");
     } catch (error) {
-      console.error("Error:", error);
+      console.error("❌ Error in handleGetReflection:", error);
       setSaveError(
         error instanceof Error ? error.message : "An error occurred",
       );
@@ -759,27 +994,27 @@ export default function Journal() {
           {/* Mood Options */}
           {!loading && !error && (
             <>
-              <div className={styles.moodOptions}>
-                {moods.map((mood) => (
-                  <button
-                    key={mood.id}
-                    onClick={() => toggleMood(mood.name)}
-                    className={`${styles.moodCard} ${
-                      selectedMoods.includes(mood.name)
-                        ? styles.selectedMood
-                        : ""
-                    }`}
-                    aria-pressed={selectedMoods.includes(mood.name)}
-                    disabled={isLocked}
-                  >
-                    <MoodEmoji
-                      animatedEmojiUrl={mood.animatedEmojiUrl}
-                      size={40}
-                    />
-
-                    <span>{mood.name}</span>
-                  </button>
-                ))}
+              <div style={{ marginBottom: "2rem" }}>
+                {(() => {
+                  const organized = organizeMoodsByCategory(moods);
+                  return (
+                    <>
+                      {(["positive", "neutral", "negative"] as const).map(
+                        (category) =>
+                          organized[category] && (
+                            <MoodCategorySection
+                              key={category}
+                              category={category}
+                              moods={organized[category]}
+                              selectedMoods={selectedMoods}
+                              onToggleMood={toggleMood}
+                              isLocked={isLocked}
+                            />
+                          ),
+                      )}
+                    </>
+                  );
+                })()}
               </div>
 
               {selectedMoods.length > 0 && (

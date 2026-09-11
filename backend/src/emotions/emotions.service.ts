@@ -8,15 +8,23 @@ export class EmotionsService {
   constructor(private prisma: PrismaService) {}
 
   findAll() {
-    return this.prisma.emotion.findMany({
-      select: {
-        id: true,
-        animatedEmojiUrl: true,
-        name: true,
-        category: true,
-        color: true,
-      },
-    });
+    return this.prisma.$queryRaw`
+    SELECT 
+      id,
+      "animatedEmojiUrl",
+      name,
+      category,
+      color
+    FROM "emotions"
+    ORDER BY 
+      CASE 
+        WHEN category = 'positive' THEN 1
+        WHEN category = 'neutral' THEN 2
+        WHEN category = 'negative' THEN 3
+        ELSE 4
+      END,
+      name ASC
+  `;
   }
 
   findOne(emotion: string) {

@@ -10,32 +10,19 @@ import { EmotionsService } from 'src/emotions/emotions.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EntryEmotion } from './entities/entry_emotion.entity';
 import axios from 'axios';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EntryEmotionsService {
-  private hfApiToken: string | undefined; // ✅ Allow undefined
-  private hfApiUrl =
-    'https://router.huggingface.co/hf-inference/models/distilbert/distilbert-base-uncased-finetuned-sst-2-english';
   constructor(
     private prisma: PrismaService,
     private emotions: EmotionsService,
-    private config: ConfigService,
-  ) {
-    // ✅ Initialize token in constructor body
-    this.hfApiToken = this.config.get<string>('HF_TOKEN');
-
-    if (!this.hfApiToken) {
-      console.warn('⚠️ HF_TOKEN not found in .env');
-    }
-  }
+  ) {}
 
   async create(
     createEntryEmotionDtos: CreateEntryEmotionDto[],
     userId: number,
-    tx?: any, // Accept optional transaction
+    tx?: any,
   ) {
-    // Use provided tx or create new transaction if none provided
     if (tx) {
       return this._createWithinTransaction(createEntryEmotionDtos, userId, tx);
     } else {
@@ -52,7 +39,6 @@ export class EntryEmotionsService {
   ) {
     const results: EntryEmotion[] = [];
     for (const dto of createEntryEmotionDtos) {
-      // ... all your validation logic stays the same ...
       const entry = await tx.entry.findUnique({
         where: {
           id: dto.entryId,
@@ -118,7 +104,6 @@ export class EntryEmotionsService {
         );
       }
 
-      // Check existing
       const existing = await tx.entryEmotion.findUnique({
         where: {
           entryId_emotionId: {
@@ -162,86 +147,70 @@ export class EntryEmotionsService {
     DetectEntryEmotionDto: DetectEntryEmotionDto,
     userId: number,
   ): Promise<Array<{ emotionName: string; confidence: number }>> {
+    // Verify entry exists and user owns it
     const entry = await this.prisma.entry.findUnique({
       where: { id: DetectEntryEmotionDto.entryId },
       select: { userId: true },
     });
 
-    if (!entry) throw new NotFoundException('Entry not found');
-    if (Number(entry.userId) !== Number(userId))
+    if (!entry) {
+      throw new NotFoundException('Entry not found');
+    }
+
+    if (Number(entry.userId) !== Number(userId)) {
       throw new ForbiddenException('User not authorized');
+    }
+
     if (!DetectEntryEmotionDto.content?.trim()) {
       throw new BadRequestException('Content is required');
     }
 
-    // ✅ Check if token exists
-    if (!this.hfApiToken) {
-      throw new BadRequestException(
-        'Hugging Face API token not configured. Please set HUGGINGFACE_API_TOKEN in .env',
-      );
-    }
-
     try {
-      // Call Hugging Face API
-      const response = await axios.post(
-        this.hfApiUrl,
-        { inputs: DetectEntryEmotionDto.content },
-        {
-          headers: {
-            Authorization: `Bearer ${this.hfApiToken}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+      // Call FastAPI mood analyzer endpoint
+      const response = await axios.post('http://localhost:8000/analyze', {
+        text: DetectEntryEmotionDto.content.trim(),
+        threshold: 0.3, // Can be configurable
+      });
 
       const data = response.data;
 
-      let hfResults = data?.[0];
-
-      if (Array.isArray(hfResults)) {
-        hfResults = hfResults[0];
+      // Validate response structure
+      if (!data?.detected_moods || !Array.isArray(data.detected_moods)) {
+        throw new BadRequestException('Invalid response from mood analyzer');
       }
 
-      if (!hfResults?.label || hfResults?.score == null) {
-        throw new BadRequestException('Invalid response from Hugging Face');
+      if (data.detected_moods.length === 0) {
+        throw new BadRequestException('No emotions detected in entry');
       }
 
-      const sentimentLabel = hfResults.label.toUpperCase();
+      // Map FastAPI response to your format
+      const validatedEmotions = data.detected_moods.map(
+        (mood: { emotion: string; confidence: number }) => ({
+          emotionName: mood.emotion.toLowerCase(),
+          confidence: Math.min(
+            1,
+            Math.max(0, parseFloat(mood.confidence.toFixed(2))),
+          ),
+        }),
+      );
 
-      // Map HF sentiment to your category
-      const sentimentToCategoryMap = {
-        POSITIVE: 'positive',
-        NEGATIVE: 'negative',
-        NEUTRAL: 'neutral',
-      };
-
-      const targetCategory = sentimentToCategoryMap[sentimentLabel];
-
-      // Get emotions matching the sentiment category
-      const emotions = await this.prisma.emotion.findMany({
-        where: {
-          category: targetCategory,
-        },
-        select: {
-          name: true,
-        },
-      });
-
-      if (emotions.length === 0) {
-        throw new BadRequestException('No valid emotions detected in entry');
-      }
-
-      const validatedEmotions = emotions.map((emotion) => ({
-        emotionName: emotion.name,
-        confidence: Math.min(
-          1,
-          Math.max(0, parseFloat(hfResults.score.toFixed(2))),
-        ),
-      }));
-
+      // Return top 5 emotions (sorted by confidence, highest first)
       return validatedEmotions.slice(0, 5);
     } catch (error) {
       console.error('Error detecting mood:', error);
+
+      // Provide better error messages
+      if (axios.isAxiosError(error)) {
+        if (error.code === 'ECONNREFUSED') {
+          throw new BadRequestException(
+            'Mood analyzer service is not running. Make sure FastAPI is running on http://localhost:8000',
+          );
+        }
+        throw new BadRequestException(
+          `Failed to detect mood: ${error.response?.data?.detail || error.message}`,
+        );
+      }
+
       throw new BadRequestException('Failed to detect mood');
     }
   }
@@ -261,7 +230,7 @@ export class EntryEmotionsService {
         confidence,
       }),
     );
-    // Pass tx to create
+
     return await this.create(dtos, userId, tx);
   }
 

@@ -372,6 +372,7 @@ export class EntriesService {
         name: true,
         animatedEmojiUrl: true,
         color: true,
+        category: true,
       },
     });
 
@@ -408,6 +409,7 @@ export class EntriesService {
           animatedEmojiUrl: emotion.animatedEmojiUrl,
           entryCount: count,
           color: emotion.color,
+          category: emotion.category,
         };
       }),
     );

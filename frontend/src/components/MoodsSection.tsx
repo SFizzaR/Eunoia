@@ -3,17 +3,36 @@ import Mood from "./mood";
 import { MoodData } from "@/types/moods";
 import { fetchEmotions } from "../../hooks/useEmotions";
 import { useState, useEffect } from "react";
+
 export function MoodsSection() {
   const [moods, setMoods] = useState<MoodData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchEmotions()
-      .then(setMoods)
+      .then((data) => {
+        // Validate each mood has required data
+        const validMoods = data.filter((mood: MoodData) => {
+          if (!mood.name || !mood.color || !mood.animatedEmojiUrl) {
+            console.warn("Invalid mood data:", mood);
+            return false;
+          }
+          return true;
+        });
+        setMoods(validMoods);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch moods:", err);
+        setError("Failed to load moods");
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
   if (isLoading) return <div>Loading moods...</div>;
+  if (error) return <div>{error}</div>;
+  if (moods.length === 0) return <div>No moods available</div>;
+
   return (
     <section className={styles.moodsSection} id="Meet-the-moods">
       <div className={styles.moodsContainer}>

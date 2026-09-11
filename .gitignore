@@ -5,13 +5,35 @@
 
 # Dependencies
 node_modules/
+pip-log.txt
+pip-delete-this-directory.txt
+
 # Build output
 dist/
 .next/
 out/
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
 # macOS
 .DS_Store
+Thumbs.db
+*.lnk
 
 # AI/editor tooling
 .agents/
@@ -20,7 +42,56 @@ out/
 
 # Logs
 *.log
+logs/
 
-.agents/
-.claude/
-.windsurf/
+# Python Virtual Environments
+venv/
+env/
+ENV/
+.venv
+.env.local
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Python IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# IPython
+.ipynb_checkpoints/
+
+# Hugging Face Models (Large - downloaded on first run)
+models/
+*.bin
+*.safetensors
+
+# ML Model Artifacts
+*.pkl
+*.h5
+*.joblib
+
+# Temporary Files
+*.tmp
+*.bak
+*.backup
+
+# OS
+.envrc

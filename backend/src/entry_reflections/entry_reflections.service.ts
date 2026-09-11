@@ -133,7 +133,7 @@ ADVICE: [your advice here]`,
 
       return {
         success: true,
-        reflection,
+        reflectionData,
       };
     } catch (error) {
       console.error('Error generating reflection:', error);
