@@ -167,10 +167,13 @@ export class EntryEmotionsService {
 
     try {
       // Call FastAPI mood analyzer endpoint
-      const response = await axios.post('http://localhost:8000/analyze', {
-        text: DetectEntryEmotionDto.content.trim(),
-        threshold: 0.3, // Can be configurable
-      });
+      const response = await axios.post(
+        'https://eunoia-mv7d.onrender.com/analyze',
+        {
+          text: DetectEntryEmotionDto.content.trim(),
+          threshold: 0.3, // Can be configurable
+        },
+      );
 
       const data = response.data;
 
@@ -203,7 +206,7 @@ export class EntryEmotionsService {
       if (axios.isAxiosError(error)) {
         if (error.code === 'ECONNREFUSED') {
           throw new BadRequestException(
-            'Mood analyzer service is not running. Make sure FastAPI is running on http://localhost:8000',
+            'Mood analyzer service is not running. Make sure FastAPI is running on https://eunoia-mv7d.onrender.com',
           );
         }
         throw new BadRequestException(
