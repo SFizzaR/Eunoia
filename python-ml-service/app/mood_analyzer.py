@@ -18,13 +18,13 @@ class MoodAnalyzer:
             self._classifier = pipeline(
                 task="text-classification",
                 model=settings.MODEL_NAME,
-                top_k=None
+                top_k=None,
+                token=settings.HF_TOKEN if settings.HF_TOKEN else None  # Pass token here
             )
             print("Model loaded successfully!")
     
     def analyze(self, text: str, threshold: float):
         """Analyze emotions in text"""
-        # Load model on first call
         self._load_model()
         
         emotions = self._classifier(text)
@@ -42,5 +42,4 @@ class MoodAnalyzer:
             "primary_mood": detected_moods[0]['emotion'] if detected_moods else "neutral"
         }
 
-# Create singleton instance (but don't load model yet)
 mood_analyzer = MoodAnalyzer()
