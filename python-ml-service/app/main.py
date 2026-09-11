@@ -14,7 +14,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3001",  # Local dev
+        "http://localhost:3000",  # Local dev
         "https://*.onrender.com",  # All Render subdomains
     ],
     allow_credentials=True,
