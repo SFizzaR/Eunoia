@@ -1,16 +1,30 @@
 from pydantic_settings import BaseSettings
-import os
+from typing import Optional
 
 class Settings(BaseSettings):
-    MODEL_NAME: str = "SamLowe/roberta-base-go_emotions"
-    CONFIDENCE_THRESHOLD: float = 0.3
-    HF_TOKEN: str = os.getenv("HF_TOKEN", "")
-
+    """Application configuration from environment variables"""
+    
+    # Model configuration
+    MODEL_NAME: str = "j-hartmann/emotion-english-distilroberta-base"
+    HF_TOKEN: Optional[str] = None
+    
+    # API configuration
+    API_TITLE: str = "Eunoia Mood Analyzer"
+    API_VERSION: str = "1.0.0"
+    
+    # Server configuration
+    DEBUG: bool = False
+    LOG_LEVEL: str = "INFO"
+    
+    # CORS configuration
+    ALLOWED_ORIGINS: list = [
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "https://*.onrender.com",
+    ]
+    
     class Config:
         env_file = ".env"
-        env_file_encoding = "utf-8"
+        case_sensitive = True
 
 settings = Settings()
-
-# Debug: print loaded settings
-print(f"Settings loaded - MODEL_NAME: {settings.MODEL_NAME}")
