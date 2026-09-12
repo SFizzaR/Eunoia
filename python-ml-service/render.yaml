@@ -1,29 +1,6 @@
 services:
   - type: web
-    name: eunoia-mood-analyzer
+    name: eunoia
     runtime: python
-
-    # Build & Install Dependencies
-    buildCommand: pip install -r requirements.txt
-
-    # Start Command
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-
-    # Environment Variables
-    envVars:
-      - key: MODEL_NAME
-        value: j-hartmann/emotion-english-distilroberta-base
-      - key: DEBUG
-        value: "False"
-      - key: LOG_LEVEL
-        value: INFO
-      - key: PYTHONUNBUFFERED
-        value: "1"
-
-    # Health Check
-    healthCheckPath: /health
-
-    # Scaling
-    plan: free
-    # Note: Free tier = 512MB RAM
-    # If you hit memory limits, upgrade to at least $7/month plan
+    buildCommand: bash build.sh
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port 8000
