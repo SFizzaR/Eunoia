@@ -1,6 +1,6 @@
 // hooks/useTokenExpiration.ts
 import { useEffect } from "react";
-import { logout, isTokenExpired } from "../lib/auth";
+import { logout, isTokenExpired } from "../../src/lib/auth";
 
 export const useTokenExpiration = () => {
   useEffect(() => {

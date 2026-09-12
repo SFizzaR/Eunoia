@@ -4,26 +4,10 @@ import { useState } from "react";
 import { X, Play, Download, File, Music, FileText, Image } from "lucide-react";
 import styles from "./Attachmentlist.module.css";
 import { FileViewer } from "./Fileviewer";
-
-interface Attachment {
-  id: number;
-  fileName: string;
-  fileUrl: string;
-  fileType: string;
-  fileSize: number;
-}
-
-interface AttachmentListProps {
-  attachments: Attachment[];
-  entryId: number;
-  token: string;
-  onDeleteSuccess: (attachmentId: number) => void;
-  disabled?: boolean;
-}
+import { Attachment, AttachmentListProps } from "@/types/attachment";
 
 export function AttachmentList({
   attachments,
-  entryId,
   token,
   onDeleteSuccess,
   disabled = false,

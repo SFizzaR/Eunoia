@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
-
-interface Quote {
-  quote: string;
-  author: string;
-}
+import { Quote } from "@/types/quotes";
 
 export const useCachedQuote = (): Quote => {
   const [quote, setQuote] = useState<string>("");

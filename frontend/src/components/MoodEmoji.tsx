@@ -1,11 +1,7 @@
 "use client";
 import { useLottie } from "lottie-react";
 import { useEffect, useState } from "react";
-
-interface MoodEmojiProps {
-  animatedEmojiUrl: string;
-  size?: number;
-}
+import { MoodEmojiProps } from "@/types/moods";
 
 export function MoodEmoji({ animatedEmojiUrl, size = 50 }: MoodEmojiProps) {
   const [emoji, setEmoji] = useState<any>(null);

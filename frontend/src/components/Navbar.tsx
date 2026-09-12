@@ -5,7 +5,7 @@ import styles from "./navbar.module.css";
 
 export default function Navbar() {
   const router = useRouter();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   const handleGetStarted = () => {
     if (isAuthenticated) {

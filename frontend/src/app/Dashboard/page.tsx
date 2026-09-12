@@ -3,25 +3,11 @@
 import { useState, useEffect } from "react";
 import { User, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTokenExpiration } from "../../../hooks/useTokenExpiration";
-import { logout } from "../../../lib/auth";
-import { useCachedQuote } from "../../../hooks/useCachedQuotes";
+import { useTokenExpiration } from "../../hooks/useTokenExpiration";
+import { logout } from "../../lib/auth";
+import { useCachedQuote } from "../../hooks/useCachedQuotes";
 import { MoodEmoji } from "@/components/MoodEmoji";
-
-interface Emotion {
-  emotionId: string;
-  emotionName: string;
-  animatedEmojiUrl: string;
-  entryCount: number;
-  color: string;
-  category: "positive" | "neutral" | "negative";
-}
-
-interface CategorizedEmotions {
-  positive: Emotion[];
-  neutral: Emotion[];
-  negative: Emotion[];
-}
+import { Emotion, CategorizedEmotions } from "../../types/dashboard";
 
 export default function Dashboard() {
   useTokenExpiration();

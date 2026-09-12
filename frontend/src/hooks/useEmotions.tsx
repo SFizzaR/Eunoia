@@ -1,4 +1,4 @@
-import { logout } from "../lib/auth";
+import { logout } from "../../src/lib/auth";
 
 export const fetchEmotions = async () => {
   try {

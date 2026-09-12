@@ -3,17 +3,7 @@
 import { useState, useRef } from "react";
 import { X, Download } from "lucide-react";
 import styles from "./Fileviewer.module.css";
-
-interface FileViewerProps {
-  file: {
-    id: number;
-    fileName: string;
-    fileUrl: string;
-    fileType: string;
-    fileSize: number;
-  };
-  onClose: () => void;
-}
+import { FileViewerProps } from "@/types/fileViewer";
 
 export function FileViewer({ file, onClose }: FileViewerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);

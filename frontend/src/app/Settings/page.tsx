@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTokenExpiration } from "../../../hooks/useTokenExpiration";
-import { logout } from "../../../lib/auth";
+import { logout } from "../../lib/auth";
 
 interface SettingsState {
   firstName: string;

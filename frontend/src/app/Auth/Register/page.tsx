@@ -6,23 +6,7 @@ import styles from "./register.module.css";
 import Image from "next/image";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useAuth } from "@/app/context/AuthContext";
-
-interface FormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-interface FormErrors {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-  general?: string;
-}
+import { FormData, FormErrors } from "../../../types/registerForm";
 
 export default function Register() {
   const { signup } = useAuth();

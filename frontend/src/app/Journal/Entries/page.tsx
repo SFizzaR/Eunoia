@@ -3,7 +3,7 @@
 import { useState, useEffect, FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, Trash2, Edit2, ChevronLeft, Eye } from "lucide-react";
-import { useTokenExpiration } from "../../../../hooks/useTokenExpiration";
+import { useTokenExpiration } from "../../../hooks/useTokenExpiration";
 
 interface EmotionType {
   id: string;
