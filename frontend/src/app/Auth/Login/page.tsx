@@ -5,7 +5,7 @@ import Link from "next/link";
 import styles from "./login.module.css";
 import Image from "next/image";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 import { FormData, FormErrors } from "@/types/loginForm";
 
 export default function Login() {
