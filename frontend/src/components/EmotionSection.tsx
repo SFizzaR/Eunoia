@@ -1,10 +1,6 @@
 import { EmotionCard } from "./EmotionCard";
 import { EmotionSectionProps } from "../types/dashboard";
 
-/**
- * Emotion section component
- * Displays a category of emotions (positive, neutral, or negative)
- */
 export function EmotionSection({
   title,
   color,

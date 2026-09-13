@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { DASHBOARD_API } from "../constants/dashboard";
 import { logout } from "../lib/auth";
 import { CategorizedEmotions, Emotion } from "../types/dashboard";
 import { UseDashboardDataReturn } from "../types/dashboard";
@@ -24,7 +23,7 @@ export const useDashboardData = (): UseDashboardDataReturn => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(DASHBOARD_API.ENTRIES_COUNT, {
+      const response = await fetch("http://localhost:3000/entries/count", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

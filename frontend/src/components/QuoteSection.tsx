@@ -1,10 +1,6 @@
 import { COLORS } from "../constants/dashboard";
 import { QuoteSectionProps } from "@/types/quotes";
 
-/**
- * Quote section component
- * Displays the quote of the day
- */
 export function QuoteSection({ quote, author, isLoaded }: QuoteSectionProps) {
   return (
     <div

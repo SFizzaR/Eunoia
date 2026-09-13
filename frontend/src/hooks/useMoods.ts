@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { API_ENDPOINTS, ERROR_MESSAGES } from "../constants/journal";
 import { fetchEmotions } from "../hooks/useEmotions";
 import { UseMoodsReturn, Mood } from "@/types/moods";
 
@@ -39,7 +38,7 @@ export const useMoods = (): UseMoodsReturn => {
       try {
         setMoodDetectionError(null);
 
-        const response = await fetch(API_ENDPOINTS.DETECT_MOOD, {
+        const response = await fetch(`http://localhost:3000/moods/detect`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -54,9 +53,8 @@ export const useMoods = (): UseMoodsReturn => {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           throw new Error(
-            ERROR_MESSAGES.MOOD_DETECTION_ERROR(
-              errorData.message || response.statusText,
-            ),
+            "Failed to detect moods",
+            errorData.message || response.statusText,
           );
         }
 
@@ -69,10 +67,7 @@ export const useMoods = (): UseMoodsReturn => {
 
         return detectedEmotions;
       } catch (err) {
-        const errorMessage = handleError(
-          err,
-          ERROR_MESSAGES.MOOD_DETECTION_FAILED,
-        );
+        const errorMessage = handleError(err, "Failed to detect moods");
         setMoodDetectionError(errorMessage);
         throw new Error(errorMessage);
       }
@@ -107,10 +102,6 @@ export const useMoods = (): UseMoodsReturn => {
   };
 };
 
-/**
- * Extracts emotion names from various response formats
- * Handles both array and object responses from the API
- */
 function extractEmotionsFromResponse(moodData: any): string[] {
   // Handle array response
   if (Array.isArray(moodData)) {

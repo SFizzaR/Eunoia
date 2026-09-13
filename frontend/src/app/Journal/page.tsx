@@ -8,7 +8,6 @@ import { useJournalEntry } from "../../hooks/useJournalEntry";
 import { useAttachments } from "../../hooks/useAttachments";
 import { useMoods } from "../../hooks/useMoods";
 import { useReflection } from "../../hooks/useReflection";
-import { API_BASE_URL } from "../../constants/journal";
 import {
   buildEmotionsArray,
   extractUserSelectedEmotions,
@@ -27,15 +26,6 @@ import { MoodCategorySection } from "../../components/MoodCategorySection";
 import { AttachmentList } from "../../components/AttachmentList";
 import styles from "./journal.module.css";
 
-/**
- * Main Journal Component - Refactored for clean code principles
- *
- * This component has been refactored to follow:
- * - Single Responsibility Principle (each piece has one job)
- * - DRY (Don't Repeat Yourself) - logic extracted to hooks and utils
- * - Separation of Concerns (UI, API, state management)
- * - Clear naming and organization
- */
 export default function Journal() {
   useTokenExpiration();
   const router = useRouter();
@@ -115,13 +105,16 @@ export default function Journal() {
     const loadEntry = async () => {
       try {
         // Make single fetch call to load entry
-        const response = await fetch(`${API_BASE_URL}/entries/${entryId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          `http://localhost:3000/entries/${entryId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (response.status === 401) {
           console.error("Unauthorized - please log in again");

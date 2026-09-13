@@ -2,10 +2,6 @@ import { User } from "lucide-react";
 import { COLORS } from "../constants/dashboard";
 import { ProfileSectionProps } from "@/types/dashboard";
 
-/**
- * Profile section component
- * Displays user profile picture, name, and entry statistics
- */
 export function ProfileSection({
   userName,
   profileImage,

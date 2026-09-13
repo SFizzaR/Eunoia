@@ -2,9 +2,6 @@ import { MOOD_CATEGORY_LABELS, UI_CONFIG } from "../constants/journal";
 import { LottieEmoji } from "./LottieEmoji";
 import { MoodCategorySectionProps } from "../types/moods";
 
-/**
- * Renders a category of moods with toggle buttons
- */
 export function MoodCategorySection({
   category,
   moods,

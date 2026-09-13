@@ -153,7 +153,7 @@ export default function PrivacyPolicy() {
 
           {/* Policy Sections */}
           <div className="space-y-4 mb-12">
-            {sections.map((section, index) => (
+            {sections.map((section) => (
               <div
                 key={section.id}
                 className="overflow-hidden rounded-2xl transition-all duration-300"

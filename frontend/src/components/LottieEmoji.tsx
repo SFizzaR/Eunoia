@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import Lottie from "lottie-react";
 import { LottieEmojiProps } from "../types/emoji";
-/**
- * Displays animated emoji using Lottie
- * Handles loading state and fallback for missing animations
- */
+
 export function LottieEmoji({
   animationUrl,
   size = 40,

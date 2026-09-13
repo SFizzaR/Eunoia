@@ -3,9 +3,6 @@ import { Paperclip } from "lucide-react";
 import styles from "../app/Journal/journal.module.css";
 import { JournalEditorProps } from "@/types/journal";
 
-/**
- * Journal text editor with file upload capability
- */
 export function JournalEditor({
   thoughts,
   onThoughtsChange,

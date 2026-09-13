@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { API_ENDPOINTS, ERROR_MESSAGES } from "../constants/journal";
 import { logout } from "../lib/auth";
 import {
   JournalEntryData,
@@ -33,7 +32,7 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`${API_ENDPOINTS.ENTRIES}/${entryId}`, {
+      const response = await fetch(`http://localhost:3000/entries/${entryId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -47,13 +46,13 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
       }
 
       if (!response.ok) {
-        throw new Error(ERROR_MESSAGES.FETCH_FAILED);
+        throw new Error("Failed to fetch journal entry");
       }
 
       const data = await response.json();
       setEntry(data);
     } catch (err) {
-      setError(handleError(err, ERROR_MESSAGES.FETCH_FAILED));
+      setError(handleError(err, "Failed to fetch journal entry"));
     } finally {
       setLoading(false);
     }
@@ -67,7 +66,7 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
       token: string,
     ): Promise<number | null> => {
       if (!content.trim()) {
-        setSaveError(ERROR_MESSAGES.EMPTY_CONTENT);
+        setSaveError("Content cannot be empty.");
         setTimeout(() => setSaveError(null), 3000);
         return null;
       }
@@ -79,8 +78,8 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
 
         const method = entryId ? "PATCH" : "POST";
         const url = entryId
-          ? `${API_ENDPOINTS.ENTRIES}/${entryId}`
-          : API_ENDPOINTS.ENTRIES;
+          ? `http://localhost:3000/entries/${entryId}`
+          : `http://localhost:3000/entries`;
 
         const response = await fetch(url, {
           method,
@@ -101,7 +100,7 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
         }
 
         if (!response.ok) {
-          throw new Error(ERROR_MESSAGES.SAVE_DRAFT_FAILED);
+          throw new Error("Failed to save draft");
         }
 
         const data = await response.json();
@@ -110,7 +109,7 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
 
         return data.id;
       } catch (err) {
-        setSaveError(handleError(err, ERROR_MESSAGES.SAVE_DRAFT_FAILED));
+        setSaveError(handleError(err, "Failed to save draft"));
         return null;
       } finally {
         setSaving(false);
@@ -127,7 +126,7 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
       token: string,
     ): Promise<void> => {
       if (!content.trim()) {
-        setSaveError(ERROR_MESSAGES.EMPTY_CONTENT);
+        setSaveError("Content cannot be empty.");
         setTimeout(() => setSaveError(null), 3000);
         return;
       }
@@ -139,7 +138,7 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
 
         if (!entryId) {
           // Create new published entry
-          const response = await fetch(API_ENDPOINTS.ENTRIES, {
+          const response = await fetch(`http://localhost:3000/entries`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -158,24 +157,27 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
           }
 
           if (!response.ok) {
-            throw new Error(ERROR_MESSAGES.PUBLISH_FAILED);
+            throw new Error("Failed to publish entry");
           }
 
           const data = await response.json();
           setEntry({ ...data, isDraft: false });
         } else {
           // Update existing entry to published
-          const response = await fetch(`${API_ENDPOINTS.ENTRIES}/${entryId}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+          const response = await fetch(
+            `http://localhost:3000/entries/${entryId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                content,
+                IsDraft: false,
+              }),
             },
-            body: JSON.stringify({
-              content,
-              IsDraft: false,
-            }),
-          });
+          );
 
           if (response.status === 401) {
             logout();
@@ -183,7 +185,7 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
           }
 
           if (!response.ok) {
-            throw new Error(ERROR_MESSAGES.PUBLISH_FAILED);
+            throw new Error("Failed to publish entry");
           }
 
           setEntry((prev) => (prev ? { ...prev, isDraft: false } : null));
@@ -192,7 +194,7 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3000);
       } catch (err) {
-        setSaveError(handleError(err, ERROR_MESSAGES.PUBLISH_FAILED));
+        setSaveError(handleError(err, "Failed to publish entry"));
       } finally {
         setSaving(false);
       }
@@ -212,13 +214,16 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
         setSaving(true);
         setDeleteError(null);
 
-        const response = await fetch(`${API_ENDPOINTS.ENTRIES}/${entryId}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          `http://localhost:3000/entries/${entryId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (response.status === 401) {
           logout();
@@ -226,14 +231,14 @@ export const useJournalEntry = (): UseJournalEntryReturn => {
         }
 
         if (!response.ok) {
-          throw new Error(ERROR_MESSAGES.DELETE_FAILED);
+          throw new Error("Failed to delete entry");
         }
 
         setDeleteSuccess(true);
         setEntry(null);
         setTimeout(() => setDeleteSuccess(false), 3000);
       } catch (err) {
-        setDeleteError(handleError(err, ERROR_MESSAGES.DELETE_FAILED));
+        setDeleteError(handleError(err, "Failed to delete entry"));
       } finally {
         setSaving(false);
       }

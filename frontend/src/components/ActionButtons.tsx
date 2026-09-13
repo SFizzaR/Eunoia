@@ -2,9 +2,6 @@ import { Loader, Sparkles } from "lucide-react";
 import styles from "../app/Journal/journal.module.css";
 import { ActionButtonsProps } from "@/types/actionButton";
 
-/**
- * Action buttons for journal entry operations
- */
 export function ActionButtons({
   saving,
   reflectionLoading,

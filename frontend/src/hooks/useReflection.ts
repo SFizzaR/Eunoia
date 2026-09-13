@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { API_ENDPOINTS, ERROR_MESSAGES } from "../constants/journal";
 import { UseReflectionReturn, ReflectionData } from "@/types/reflection";
 
 export const useReflection = (): UseReflectionReturn => {
@@ -17,7 +16,7 @@ export const useReflection = (): UseReflectionReturn => {
     async (entryId: number | string, token: string) => {
       try {
         const response = await fetch(
-          API_ENDPOINTS.ENTRY_REFLECTIONS_BY_ID(entryId),
+          `http://localhost:3000/entries/${entryId}/reflections`,
           {
             method: "GET",
             headers: {
@@ -47,7 +46,7 @@ export const useReflection = (): UseReflectionReturn => {
       token: string,
     ) => {
       if (!content.trim()) {
-        setReflectionError(ERROR_MESSAGES.EMPTY_CONTENT);
+        setReflectionError("Content cannot be empty.");
         return;
       }
 
@@ -55,24 +54,28 @@ export const useReflection = (): UseReflectionReturn => {
         setReflectionLoading(true);
         setReflectionError(null);
 
-        const response = await fetch(API_ENDPOINTS.ENTRY_REFLECTIONS, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          `http://localhost:3000/entries/${entryId}/reflections`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              entryId,
+              content,
+              emotions,
+            }),
           },
-          body: JSON.stringify({
-            entryId,
-            content,
-            emotions,
-          }),
-        });
+        );
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           throw new Error(
-            ERROR_MESSAGES.REFLECTION_ERROR(
+            handleError(
               errorData.message || response.statusText,
+              "Failed to generate reflection",
             ),
           );
         }
@@ -85,7 +88,7 @@ export const useReflection = (): UseReflectionReturn => {
       } catch (error) {
         const errorMessage = handleError(
           error,
-          ERROR_MESSAGES.REFLECTION_FAILED,
+          "Failed to generate reflection",
         );
         setReflectionError(errorMessage);
         console.error("Error generating reflection:", error);
@@ -114,10 +117,6 @@ export const useReflection = (): UseReflectionReturn => {
   };
 };
 
-/**
- * Extracts reflection and advice from various response formats
- * Handles both nested and flat response structures
- */
 function extractReflectionData(data: any): ReflectionData {
   // Handle nested structure: data.reflectionData.reflection
   const actualData = data.reflectionData || data;

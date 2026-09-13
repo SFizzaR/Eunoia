@@ -4,9 +4,6 @@ import { MoodEmoji } from "@/components/MoodEmoji";
 import styles from "../app/Journal/journal.module.css";
 import { ReflectionSectionProps } from "../types/reflection";
 
-/**
- * Displays AI-generated reflection with detected moods
- */
 export function ReflectionSection({
   show,
   reflectionLoading,

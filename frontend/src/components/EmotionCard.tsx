@@ -1,10 +1,6 @@
 import { MoodEmoji } from "@/components/MoodEmoji";
 import { EmotionCardProps } from "../types/dashboard";
 
-/**
- * Emotion folder card component
- * Displays an emotion with animated folder visualization
- */
 export function EmotionCard({
   emotion,
   index,

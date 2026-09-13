@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { DASHBOARD_API, MESSAGES } from "../constants/dashboard";
 import { logout } from "../lib/auth";
 import { UseProfileImageReturn } from "@/types/dashboard";
 /**
@@ -39,13 +38,16 @@ export const useProfileImage = (): UseProfileImageReturn => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await fetch(DASHBOARD_API.PROFILE_IMAGE, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          "http://localhost:3000/users/profile-image",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
           },
-          body: formData,
-        });
+        );
 
         if (response.status === 401) {
           logout();
@@ -55,7 +57,7 @@ export const useProfileImage = (): UseProfileImageReturn => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || MESSAGES.PROFILE_IMAGE_UPLOAD_FAILED);
+          throw new Error(data.message || "Failed to upload profile picture");
         }
 
         const uploadedImageUrl =
@@ -65,7 +67,7 @@ export const useProfileImage = (): UseProfileImageReturn => {
           updateStoredUserImage(uploadedImageUrl);
         }
       } catch (err) {
-        handleError(err, MESSAGES.PROFILE_IMAGE_UPLOAD_FAILED);
+        handleError(err, "Failed to upload profile picture");
       } finally {
         setUploading(false);
       }
@@ -75,19 +77,24 @@ export const useProfileImage = (): UseProfileImageReturn => {
 
   const deleteProfileImage = useCallback(
     async (token: string) => {
-      const confirmed = window.confirm(MESSAGES.PROFILE_IMAGE_DELETE_CONFIRM);
+      const confirmed = window.confirm(
+        "Are you sure you want to remove your profile picture?",
+      );
       if (!confirmed) return;
 
       try {
         setDeleting(true);
         setError(null);
 
-        const response = await fetch(DASHBOARD_API.PROFILE_IMAGE, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          "http://localhost:3000/users/profile-image",
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (response.status === 401) {
           logout();
@@ -97,13 +104,13 @@ export const useProfileImage = (): UseProfileImageReturn => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || MESSAGES.PROFILE_IMAGE_DELETE_FAILED);
+          throw new Error(data.message || "Failed to delete profile picture");
         }
 
         setProfileImage(null);
         updateStoredUserImage(null);
       } catch (err) {
-        handleError(err, MESSAGES.PROFILE_IMAGE_DELETE_FAILED);
+        handleError(err, "Failed to delete profile picture");
       } finally {
         setDeleting(false);
       }

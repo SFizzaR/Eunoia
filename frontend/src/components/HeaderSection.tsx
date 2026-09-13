@@ -1,9 +1,5 @@
 import { HeaderSectionProps } from "@/types/dashboard";
 
-/**
- * Header/cover image section component
- * Displays background image with upload/delete controls
- */
 export function HeaderSection({
   headerImage,
   currentDate,

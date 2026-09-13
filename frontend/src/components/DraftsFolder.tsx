@@ -2,10 +2,6 @@ import { Pencil } from "lucide-react";
 import { COLORS } from "../constants/dashboard";
 import { DraftsFolderProps } from "@/types/dashboard";
 
-/**
- * Drafts folder component
- * Displays a folder for viewing draft entries
- */
 export function DraftsFolder({ draftCount, onViewDrafts }: DraftsFolderProps) {
   if (draftCount === 0) {
     return null;

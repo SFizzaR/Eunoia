@@ -1,10 +1,3 @@
-// API Configuration for Dashboard
-export const DASHBOARD_API = {
-  ENTRIES_COUNT: "http://localhost:3000/entries/count",
-  PROFILE_IMAGE: "http://localhost:3000/users/profile-image",
-  COVER_PHOTO: "http://localhost:3000/users/cover-photo",
-} as const;
-
 // Category Configuration
 export const CATEGORY_CONFIG = {
   positive: {
@@ -47,19 +40,6 @@ export const COLORS = {
   SHADOW_LIGHT: "rgba(0, 0, 0, 0.05)",
   SHADOW_MEDIUM: "rgba(0, 0, 0, 0.1)",
   SHADOW_COLOR: "rgba(247, 130, 169, 0.1)",
-} as const;
-
-// Error & Success Messages
-export const MESSAGES = {
-  PROFILE_IMAGE_DELETE_CONFIRM:
-    "Are you sure you want to remove your profile picture?",
-  COVER_IMAGE_DELETE_CONFIRM:
-    "Are you sure you want to remove your profile picture?",
-  PROFILE_IMAGE_UPLOAD_FAILED: "Failed to upload profile image",
-  PROFILE_IMAGE_DELETE_FAILED: "Failed to delete profile image",
-  COVER_PHOTO_UPLOAD_FAILED: "Failed to upload cover photo",
-  COVER_PHOTO_DELETE_FAILED: "Failed to delete cover photo",
-  NO_EMOTIONS_YET: "No emotions yet. Start writing to see your emotions!",
 } as const;
 
 // Date Format Options

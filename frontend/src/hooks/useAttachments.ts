@@ -1,9 +1,5 @@
 import { useState, useCallback } from "react";
-import {
-  API_ENDPOINTS,
-  ERROR_MESSAGES,
-  UPLOAD_CONFIG,
-} from "../constants/journal";
+import { UPLOAD_CONFIG } from "../constants/journal";
 import { Attachment } from "@/types/attachment";
 import { logout } from "../lib/auth";
 import { UseAttachmentsReturn } from "@/types/attachment";
@@ -28,12 +24,15 @@ export const useAttachments = (): UseAttachmentsReturn => {
     async (entryId: number | string, token: string) => {
       try {
         setLoadingAttachments(true);
-        const response = await fetch(API_ENDPOINTS.ATTACHMENTS(entryId), {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          `http://localhost:3000/entries/${entryId}/attachments`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (response.status === 401) {
           logout();
@@ -77,13 +76,16 @@ export const useAttachments = (): UseAttachmentsReturn => {
           formData.append("files", file);
         });
 
-        const response = await fetch(API_ENDPOINTS.ATTACHMENTS(entryId), {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          `http://localhost:3000/entries/${entryId}/attachments`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
           },
-          body: formData,
-        });
+        );
 
         if (response.status === 401) {
           logout();
@@ -92,13 +94,13 @@ export const useAttachments = (): UseAttachmentsReturn => {
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.message || ERROR_MESSAGES.UPLOAD_FAILED);
+          throw new Error(error.message || "Failed to upload attachment");
         }
 
         // Refresh attachments list
         await fetchAttachments(entryId, token);
       } catch (err) {
-        setUploadError(handleError(err, ERROR_MESSAGES.UPLOAD_FAILED));
+        setUploadError(handleError(err, "Failed to upload attachment"));
       } finally {
         setUploadingFile(false);
       }

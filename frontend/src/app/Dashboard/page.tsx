@@ -7,7 +7,7 @@ import { useCachedQuote } from "../../hooks/useCachedQuotes";
 import { useDashboardData } from "../../hooks/useData";
 import { useProfileImage } from "../../hooks/useProfileImage";
 import { useCoverImage } from "../../hooks/useCoverImage";
-import { COLORS, CATEGORY_CONFIG, MESSAGES } from "../../constants/dashboard";
+import { COLORS, CATEGORY_CONFIG } from "../../constants/dashboard";
 import {
   formatCurrentDate,
   hasEmotions,
@@ -230,7 +230,7 @@ export default function Dashboard() {
                     fontFamily: "'Poppins', sans-serif",
                   }}
                 >
-                  {MESSAGES.NO_EMOTIONS_YET}
+                  No emotions yet.
                 </p>
               </div>
             )

@@ -1,9 +1,5 @@
 import { AddEntryButtonProps } from "@/types/dashboard";
 
-/**
- * Add entry button component
- * Floating action button to create a new journal entry
- */
 export function AddEntryButton({ onAddEntry }: AddEntryButtonProps) {
   return (
     <button
