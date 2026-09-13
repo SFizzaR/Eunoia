@@ -34,3 +34,11 @@ export interface UseMoodsReturn {
   ) => Promise<string[]>;
   clearMoods: () => void;
 }
+
+export interface MoodCategorySectionProps {
+  category: "positive" | "neutral" | "negative";
+  moods: Mood[];
+  selectedMoods: string[];
+  onToggleMood: (name: string) => void;
+  isLocked: boolean;
+}

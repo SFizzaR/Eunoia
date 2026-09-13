@@ -1,18 +1,7 @@
 import { useRef } from "react";
 import { Paperclip } from "lucide-react";
 import styles from "../app/Journal/journal.module.css";
-
-interface JournalEditorProps {
-  thoughts: string;
-  onThoughtsChange: (content: string) => void;
-  onFileUpload: (files: FileList | null) => void;
-  uploadError: string | null;
-  deleteError: string | null;
-  uploadingFile: boolean;
-  isLocked: boolean;
-  hasEntry: boolean;
-  wordCount: number;
-}
+import { JournalEditorProps } from "@/types/journal";
 
 /**
  * Journal text editor with file upload capability

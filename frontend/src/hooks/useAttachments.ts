@@ -3,7 +3,7 @@ import {
   API_ENDPOINTS,
   ERROR_MESSAGES,
   UPLOAD_CONFIG,
-} from "../constants/constants";
+} from "../constants/journal";
 import { Attachment } from "@/types/attachment";
 import { logout } from "../lib/auth";
 import { UseAttachmentsReturn } from "@/types/attachment";

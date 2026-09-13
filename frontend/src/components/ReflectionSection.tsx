@@ -1,20 +1,8 @@
 import { Loader, Sparkles } from "lucide-react";
-import { Mood } from "../types/moods";
-import { ReflectionData } from "../types/reflection";
 import { findMoodByName } from "../utils/moodUtils";
 import { MoodEmoji } from "@/components/MoodEmoji";
 import styles from "../app/Journal/journal.module.css";
-
-interface ReflectionSectionProps {
-  show: boolean;
-  reflectionLoading: boolean;
-  generatedReflection: ReflectionData | null;
-  detectedMoods: string[];
-  moods: Mood[];
-  isLocked: boolean;
-  onRegenerateReflection: () => void;
-  onGenerateNewReflection: () => void;
-}
+import { ReflectionSectionProps } from "../types/reflection";
 
 /**
  * Displays AI-generated reflection with detected moods

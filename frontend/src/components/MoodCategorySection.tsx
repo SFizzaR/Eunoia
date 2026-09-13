@@ -1,14 +1,6 @@
-import { Mood } from "../types/moods";
-import { MOOD_CATEGORY_LABELS, UI_CONFIG } from "../constants/constants";
+import { MOOD_CATEGORY_LABELS, UI_CONFIG } from "../constants/journal";
 import { LottieEmoji } from "./LottieEmoji";
-
-interface MoodCategorySectionProps {
-  category: "positive" | "neutral" | "negative";
-  moods: Mood[];
-  selectedMoods: string[];
-  onToggleMood: (name: string) => void;
-  isLocked: boolean;
-}
+import { MoodCategorySectionProps } from "../types/moods";
 
 /**
  * Renders a category of moods with toggle buttons

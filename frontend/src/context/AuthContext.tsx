@@ -7,28 +7,7 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-
-interface User {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName?: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  loading: boolean;
-  signup: (
-    email: string,
-    password: string,
-    firstName: string,
-    lastName?: string,
-  ) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  isAuthenticated: boolean;
-}
+import { AuthContextType, User } from "@/types/auth";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

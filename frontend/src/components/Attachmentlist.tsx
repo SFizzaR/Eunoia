@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { X, Play, Download, File, Music, FileText, Image } from "lucide-react";
-import styles from "./Attachmentlist.module.css";
+import styles from "./AttachmentList.module.css";
 import { FileViewer } from "./Fileviewer";
 import { Attachment, AttachmentListProps } from "@/types/attachment";
 

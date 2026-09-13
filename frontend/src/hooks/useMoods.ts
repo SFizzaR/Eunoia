@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { API_ENDPOINTS, ERROR_MESSAGES } from "../constants/constants";
+import { API_ENDPOINTS, ERROR_MESSAGES } from "../constants/journal";
 import { fetchEmotions } from "../hooks/useEmotions";
 import { UseMoodsReturn, Mood } from "@/types/moods";
 

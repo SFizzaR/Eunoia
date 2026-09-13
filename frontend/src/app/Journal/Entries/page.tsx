@@ -4,35 +4,7 @@ import { useState, useEffect, FC } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, Trash2, Edit2, ChevronLeft, Eye } from "lucide-react";
 import { useTokenExpiration } from "../../../hooks/useTokenExpiration";
-
-interface EmotionType {
-  id: string;
-  emotionName: string;
-  emoji: string;
-}
-
-interface EntryType {
-  id: string;
-  content: string;
-  date: string;
-  title?: string;
-  isDraft: boolean;
-  emotions: EmotionType[];
-  wordCount: number;
-  attachmentCount: number;
-  isAiDetected?: boolean;
-}
-
-interface FetchedEmotion {
-  emotionId: string;
-  emotionName: string;
-  emoji: string;
-}
-
-interface EntriesResponse {
-  entries: EntryType[];
-  emotion?: FetchedEmotion;
-}
+import { EntryType, FetchedEmotion } from "@/types/entries";
 
 const EntriesContent: FC = () => {
   useTokenExpiration();

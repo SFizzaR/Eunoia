@@ -37,3 +37,15 @@ export interface UseJournalEntryReturn {
   deleteEntry: (entryId: number, token: string) => Promise<void>;
   clearMessages: () => void;
 }
+
+export interface JournalEditorProps {
+  thoughts: string;
+  onThoughtsChange: (content: string) => void;
+  onFileUpload: (files: FileList | null) => void;
+  uploadError: string | null;
+  deleteError: string | null;
+  uploadingFile: boolean;
+  isLocked: boolean;
+  hasEntry: boolean;
+  wordCount: number;
+}

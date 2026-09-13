@@ -10,13 +10,7 @@ import {
   Share2,
   Shield,
 } from "lucide-react";
-
-interface PolicySection {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
-  content: string[];
-}
+import { PolicySection } from "@/types/policySection";
 
 export default function PrivacyPolicy() {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(

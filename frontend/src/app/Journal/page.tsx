@@ -8,7 +8,7 @@ import { useJournalEntry } from "../../hooks/useJournalEntry";
 import { useAttachments } from "../../hooks/useAttachments";
 import { useMoods } from "../../hooks/useMoods";
 import { useReflection } from "../../hooks/useReflection";
-import { API_BASE_URL } from "../../constants/constants";
+import { API_BASE_URL } from "../../constants/journal";
 import {
   buildEmotionsArray,
   extractUserSelectedEmotions,
@@ -24,7 +24,7 @@ import { JournalEditor } from "../../components/JournalEditor";
 import { ActionButtons } from "../../components/ActionButtons";
 import { ReflectionSection } from "../../components/ReflectionSection";
 import { MoodCategorySection } from "../../components/MoodCategorySection";
-import { AttachmentList } from "../../components/Attachmentlist";
+import { AttachmentList } from "../../components/AttachmentList";
 import styles from "./journal.module.css";
 
 /**
@@ -72,7 +72,6 @@ export default function Journal() {
 
   const {
     attachments,
-    loadingAttachments,
     uploadingFile,
     uploadError,
     deleteError: attachmentDeleteError,
@@ -86,7 +85,6 @@ export default function Journal() {
     reflectionLoading,
     reflectionError,
     showReflection,
-    setShowReflection,
     fetchExistingReflection,
     generateReflection,
   } = useReflection();
