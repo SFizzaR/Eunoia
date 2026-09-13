@@ -7,9 +7,9 @@ Eunoia is an AI-powered journaling app that allows users to create and manage jo
 ## Core Features
 
 - **Personalized Dashboard:** Get a daily quote, display your profile and cover images, access existing drafts and published entries organized by emotion
-- **Entries Management:** Search and filter entries by emotion or date, view published entries, edit draft entries, and delete entries as needed
+- **Entries Management:** Search and filter entries by date, view published entries, edit draft entries, and delete entries as needed
 - **Journal Space:** Select emotions for your entry, write content, and add, view, and download attachments
-- **AI-Powered Mood Detection & Reflection:** Automatically detect the mood of your entry and receive AI-generated reflections and advice
+- **AI-Powered Mood Detection & Reflection:** Detect the mood of your entry and receive AI-generated reflections and advice
 - **User Authentication:** Secure login and account management
 
 ## Tech Stack 
