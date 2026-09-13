@@ -16,7 +16,7 @@ export const useReflection = (): UseReflectionReturn => {
     async (entryId: number | string, token: string) => {
       try {
         const response = await fetch(
-          `http://localhost:3000/entries/${entryId}/reflections`,
+          `http://localhost:3000/entry-reflections/${entryId}`,
           {
             method: "GET",
             headers: {
@@ -55,7 +55,7 @@ export const useReflection = (): UseReflectionReturn => {
         setReflectionError(null);
 
         const response = await fetch(
-          `http://localhost:3000/entries/${entryId}/reflections`,
+          `http://localhost:3000/entry-reflections/${entryId}`,
           {
             method: "POST",
             headers: {

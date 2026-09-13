@@ -38,17 +38,20 @@ export const useMoods = (): UseMoodsReturn => {
       try {
         setMoodDetectionError(null);
 
-        const response = await fetch(`http://localhost:3000/moods/detect`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          `http://localhost:3000/entry-emotions/detect-mood`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              content,
+              entryId,
+            }),
           },
-          body: JSON.stringify({
-            content,
-            entryId,
-          }),
-        });
+        );
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));

@@ -25,7 +25,7 @@ export const useAttachments = (): UseAttachmentsReturn => {
       try {
         setLoadingAttachments(true);
         const response = await fetch(
-          `http://localhost:3000/entries/${entryId}/attachments`,
+          `http://localhost:3000/attachments/${entryId}`,
           {
             method: "GET",
             headers: {
@@ -47,6 +47,7 @@ export const useAttachments = (): UseAttachmentsReturn => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log("Fetched attachments:", data);
           setAttachments(Array.isArray(data) ? data : []);
         }
       } catch (err) {
@@ -77,7 +78,7 @@ export const useAttachments = (): UseAttachmentsReturn => {
         });
 
         const response = await fetch(
-          `http://localhost:3000/entries/${entryId}/attachments`,
+          `http://localhost:3000/attachments/${entryId}`,
           {
             method: "POST",
             headers: {
