@@ -14,7 +14,7 @@ Eunoia is an AI-powered journaling app that allows users to create and manage jo
 
 - **Entries Management:** Search and filter entries by date, view published entries, edit draft entries, and delete entries as needed
 
-<img width="1470" height="956" alt="image" src="https://github.com/user-attachments/assets/8c29f3b7-7453-45a3-81c4-5021cf2ec084" />
+<img width="1470" height="956" alt="image" src="https://github.com/user-attachments/assets/05166623-dbdb-49d3-b382-70c76800cdcf" />
 
 - **Journal Space:** Select emotions for your entry, write content, and add, view, and download attachments
 
